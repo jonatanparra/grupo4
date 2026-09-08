@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../img/favicon.png" type="image/png">
+<title>Editar usuario — Panel administrador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__marca"><img src="../img/logo.png" alt="Glitch Store" class="marca__logo"><span class="admin-sidebar__marca-tag">admin</span></div>
+    <nav>
+      <a href="home.html">📊 Dashboard</a>
+      <a href="productos.html">🎮 Productos</a>
+      <a href="usuarios.html" class="activo">👤 Usuarios</a>
+    </nav>
+    <div class="admin-sidebar__pie">
+      <a href="../index.html">← Volver a la tienda</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-encabezado">
+      <h1>Editar usuario</h1>
+      <a href="usuarios.html" class="boton boton--contorno">Volver al listado</a>
+    </div>
+
+    <form class="formulario" id="form-usuario" style="max-width:640px;" novalidate>
+      <div class="mensaje-exito" id="mensaje-exito">Usuario actualizado correctamente.</div>
+
+      <div class="campo">
+        <label for="run">RUN (sin puntos ni guion)</label>
+        <input type="text" id="run" maxlength="9" readonly>
+        <span class="ayuda-campo">El RUN no se puede modificar una vez creado.</span>
+        <span class="mensaje-error" id="run-error"></span>
+      </div>
+
+      <div class="campo-dos-columnas">
+        <div class="campo">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" maxlength="50">
+          <span class="mensaje-error" id="nombre-error"></span>
+        </div>
+        <div class="campo">
+          <label for="apellidos">Apellidos</label>
+          <input type="text" id="apellidos" maxlength="100">
+          <span class="mensaje-error" id="apellidos-error"></span>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="correo">Correo</label>
+        <input type="email" id="correo" maxlength="100">
+        <span class="mensaje-error" id="correo-error"></span>
+      </div>
+
+      <div class="campo-dos-columnas">
+        <div class="campo">
+          <label for="fechaNacimiento">Fecha de nacimiento <span class="opcional-etiqueta">(opcional)</span></label>
+          <input type="date" id="fechaNacimiento">
+          <span class="mensaje-error" id="fechaNacimiento-error"></span>
+        </div>
+        <div class="campo">
+          <label for="tipoUsuario">Tipo de usuario</label>
+          <select id="tipoUsuario">
+            <option value="">-- Seleccione el perfil --</option>
+            <option>Administrador</option>
+            <option>Vendedor</option>
+            <option>Cliente</option>
+          </select>
+          <span class="mensaje-error" id="tipoUsuario-error"></span>
+        </div>
+      </div>
+
+      <div class="campo-dos-columnas">
+        <div class="campo">
+          <label for="region">Región</label>
+          <select id="region">
+            <option value="">-- Seleccione la región --</option>
+          </select>
+          <span class="mensaje-error" id="region-error"></span>
+        </div>
+        <div class="campo">
+          <label for="comuna">Comuna</label>
+          <select id="comuna">
+            <option value="">-- Seleccione la comuna --</option>
+          </select>
+          <span class="mensaje-error" id="comuna-error"></span>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" maxlength="300">
+        <span class="mensaje-error" id="direccion-error"></span>
+      </div>
+
+      <button type="submit" class="boton boton--ocre boton--ancho">Guardar cambios</button>
+    </form>
+  </main>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/validaciones.js"></script>
+<script src="../js/carrito.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  const parametros = new URLSearchParams(window.location.search);
+  const run = parametros.get("run");
+  const usuario = USUARIOS.find((u) => u.run === run) || USUARIOS[0];
+
+  const selectRegion = document.getElementById("region");
+  const selectComuna = document.getElementById("comuna");
+
+  REGIONES.forEach((r) => {
+    const opt = document.createElement("option");
+    opt.value = r.id;
+    opt.textContent = r.nombre;
+    selectRegion.appendChild(opt);
+  });
+
+  function cargarComunas(comunaSeleccionada) {
+    const region = REGIONES.find((r) => r.id === selectRegion.value);
+    selectComuna.innerHTML = '<option value="">-- Seleccione la comuna --</option>';
+    if (region) {
+      region.comunas.forEach((c) => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.nombre;
+        if (c.id === comunaSeleccionada) opt.selected = true;
+        selectComuna.appendChild(opt);
+      });
+    }
+  }
+
+  document.getElementById("run").value = usuario.run;
+  document.getElementById("nombre").value = usuario.nombre;
+  document.getElementById("apellidos").value = usuario.apellidos;
+  document.getElementById("correo").value = usuario.correo;
+  document.getElementById("tipoUsuario").value = usuario.tipo;
+  document.getElementById("direccion").value = usuario.direccion;
+  selectRegion.value = usuario.region;
+  cargarComunas(usuario.comuna);
+
+  selectRegion.addEventListener("change", () => cargarComunas());
+
+  const reglas = {
+    run: () => validarRequerido(document.getElementById("run").value, "El RUN"),
+    nombre: () => validarRequerido(document.getElementById("nombre").value, "El nombre") || validarMaximo(document.getElementById("nombre").value, 50, "El nombre"),
+    apellidos: () => validarRequerido(document.getElementById("apellidos").value, "Los apellidos") || validarMaximo(document.getElementById("apellidos").value, 100, "Los apellidos"),
+    correo: () => validarCorreo(document.getElementById("correo").value, true) || validarMaximo(document.getElementById("correo").value, 100, "El correo"),
+    fechaNacimiento: () => "",
+    tipoUsuario: () => validarRequerido(document.getElementById("tipoUsuario").value, "El tipo de usuario"),
+    region: () => validarRequerido(document.getElementById("region").value, "La región"),
+    comuna: () => validarRequerido(document.getElementById("comuna").value, "La comuna"),
+    direccion: () => validarRequerido(document.getElementById("direccion").value, "La dirección") || validarMaximo(document.getElementById("direccion").value, 300, "La dirección"),
+  };
+
+  Object.keys(reglas).forEach((id) => validarEnVivo(id, reglas[id]));
+
+  document.getElementById("form-usuario").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const mensajeExito = document.getElementById("mensaje-exito");
+    if (validarFormulario(reglas)) {
+      mensajeExito.classList.add("mensaje-exito--visible");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      mensajeExito.classList.remove("mensaje-exito--visible");
+    }
+  });
+</script>
+</body>
+</html>

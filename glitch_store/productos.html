@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<title>Productos — Glitch Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <nav class="nav">
+    <a href="index.html" class="marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="productos.html">Productos</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="blogs.html">Blogs</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div class="nav-acciones">
+      <div class="nav-acciones__auth">
+        <a href="login.html">Iniciar sesión</a>
+        <a href="registro.html">Registrarse</a>
+      </div>
+      <a href="carrito.html" class="carrito-boton">🛒 <span data-carrito-contador>0</span></a>
+    </div>
+  </nav>
+</header>
+
+<main class="seccion">
+  <div class="contenedor">
+    <div class="seccion__encabezado">
+      <h1>Productos</h1>
+      <p>Filtra por categoría o revisa el catálogo completo de terror, acción, narrativa e indie.</p>
+    </div>
+
+    <div class="filtros-categoria" id="filtros"></div>
+    <div class="grilla-productos" id="grilla-productos"></div>
+  </div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__inferior">
+      <span>© <span data-anio></span> Glitch Store. Proyecto académico DSY1104.</span>
+      <a href="contacto.html">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/validaciones.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const categorias = ["Todas", ...new Set(PRODUCTOS.map((p) => p.categoria))];
+  const contenedorFiltros = document.getElementById("filtros");
+
+  function pintarFiltros(activa) {
+    contenedorFiltros.innerHTML = categorias
+      .map((cat) => `<button type="button" class="${cat === activa ? "activo" : ""}" data-cat="${cat}">${cat}</button>`)
+      .join("");
+
+    contenedorFiltros.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const cat = btn.dataset.cat;
+        pintarFiltros(cat);
+        const lista = cat === "Todas" ? PRODUCTOS : PRODUCTOS.filter((p) => p.categoria === cat);
+        renderGrillaProductos("grilla-productos", lista);
+      });
+    });
+  }
+
+  pintarFiltros("Todas");
+  renderGrillaProductos("grilla-productos", PRODUCTOS);
+</script>
+</body>
+</html>

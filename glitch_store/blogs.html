@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<title>Blogs — Glitch Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <nav class="nav">
+    <a href="index.html" class="marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="productos.html">Productos</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="blogs.html">Blogs</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div class="nav-acciones">
+      <div class="nav-acciones__auth">
+        <a href="login.html">Iniciar sesión</a>
+        <a href="registro.html">Registrarse</a>
+      </div>
+      <a href="carrito.html" class="carrito-boton">🛒 <span data-carrito-contador>0</span></a>
+    </div>
+  </nav>
+</header>
+
+<main class="seccion">
+  <div class="contenedor">
+    <div class="seccion__encabezado">
+      <h1>Notas desde la tienda</h1>
+      <p>Recomendaciones, curiosidades y rituales para tus maratones de terror.</p>
+    </div>
+
+    <div class="grilla-blogs">
+      <article class="tarjeta-blog">
+        <div class="tarjeta-blog__imagen"><img src="img/blog-terror-games.svg" alt="Ilustración de un juego de terror"></div>
+        <div class="tarjeta-blog__cuerpo">
+          <h3>Caso curioso #1</h3>
+          <p>Cinco juegos de terror que se sienten mejor con las luces apagadas y los audífonos puestos, desde clásicos de sobresalto hasta terror psicológico lento.</p>
+          <a href="blog-1.html" class="boton boton--contorno" style="align-self:flex-start;">Ver caso</a>
+        </div>
+      </article>
+
+      <article class="tarjeta-blog">
+        <div class="tarjeta-blog__imagen"><img src="img/blog-maraton.svg" alt="Ilustración de un maratón de juegos de terror"></div>
+        <div class="tarjeta-blog__cuerpo">
+          <h3>Caso curioso #2</h3>
+          <p>Cómo armar un maratón de terror gamer sin quedarte sin batería a la mitad: ritmo de sustos, snacks y errores comunes de quienes se atreven a jugar de noche.</p>
+          <a href="blog-2.html" class="boton boton--contorno" style="align-self:flex-start;">Ver caso</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__inferior">
+      <span>© <span data-anio></span> Glitch Store. Proyecto académico DSY1104.</span>
+      <a href="contacto.html">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

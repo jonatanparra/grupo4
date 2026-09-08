@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../img/favicon.png" type="image/png">
+<title>Mostrar producto — Panel administrador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__marca"><img src="../img/logo.png" alt="Glitch Store" class="marca__logo"><span class="admin-sidebar__marca-tag">admin</span></div>
+    <nav>
+      <a href="home.html">📊 Dashboard</a>
+      <a href="productos.html" class="activo">🎮 Productos</a>
+      <a href="usuarios.html">👤 Usuarios</a>
+    </nav>
+    <div class="admin-sidebar__pie">
+      <a href="../index.html">← Volver a la tienda</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-encabezado">
+      <h1>Mostrar producto</h1>
+      <a href="productos.html" class="boton boton--contorno">Volver al listado</a>
+    </div>
+
+    <div class="admin-panel" id="ficha-producto">
+      <!-- Se completa por JavaScript -->
+    </div>
+  </main>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/carrito.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  const parametros = new URLSearchParams(window.location.search);
+  const codigo = parametros.get("codigo");
+  const producto = PRODUCTOS.find((p) => p.codigo === codigo) || PRODUCTOS[0];
+  const critico = producto.stock <= producto.stockCritico;
+
+  document.getElementById("ficha-producto").innerHTML = `
+    <div style="display:flex; gap:28px; flex-wrap:wrap; margin-bottom:28px;">
+      <img src="../${producto.imagen}" alt="${producto.nombre}" style="width:160px; height:213px; object-fit:cover; border-radius:var(--radio); border:1px solid var(--borde);">
+      <div>
+        <p style="color:var(--verde-musgo); font-weight:600; margin-bottom:4px;">${producto.categoria}</p>
+        <h2 style="margin-bottom:8px;">${producto.nombre}</h2>
+        <p style="font-family:var(--fuente-display); font-size:1.5rem; color:var(--tierra); margin-bottom:12px;">${formatoCLP(producto.precio)}</p>
+        <span class="etiqueta-stock ${critico ? "etiqueta-stock--critico" : "etiqueta-stock--ok"}">
+          Stock: ${producto.stock} ${critico ? "· crítico" : ""}
+        </span>
+      </div>
+    </div>
+
+    <dl class="ficha-detalle">
+      <div class="ficha-detalle__campo">
+        <dt>Código</dt>
+        <dd>${producto.codigo}</dd>
+      </div>
+      <div class="ficha-detalle__campo">
+        <dt>Categoría</dt>
+        <dd>${producto.categoria}</dd>
+      </div>
+      <div class="ficha-detalle__campo">
+        <dt>Precio</dt>
+        <dd>${formatoCLP(producto.precio)}</dd>
+      </div>
+      <div class="ficha-detalle__campo">
+        <dt>Stock crítico</dt>
+        <dd>${producto.stockCritico}</dd>
+      </div>
+      <div class="ficha-detalle__campo ficha-detalle__campo--ancho">
+        <dt>Descripción</dt>
+        <dd>${producto.descripcion}</dd>
+      </div>
+    </dl>
+
+    <a href="editar-producto.html?codigo=${producto.codigo}" class="boton boton--ocre">Editar este producto</a>
+  `;
+</script>
+</body>
+</html>

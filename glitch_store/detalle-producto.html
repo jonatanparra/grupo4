@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<title id="titulo-pagina">Detalle de producto — Glitch Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <nav class="nav">
+    <a href="index.html" class="marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="productos.html">Productos</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="blogs.html">Blogs</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div class="nav-acciones">
+      <div class="nav-acciones__auth">
+        <a href="login.html">Iniciar sesión</a>
+        <a href="registro.html">Registrarse</a>
+      </div>
+      <a href="carrito.html" class="carrito-boton">🛒 <span data-carrito-contador>0</span></a>
+    </div>
+  </nav>
+</header>
+
+<main class="seccion">
+  <div class="contenedor">
+    <p class="migas" id="migas">
+      <a href="index.html">Home</a> &rsaquo; <a href="productos.html">Productos</a> &rsaquo; <span id="miga-nombre"></span>
+    </p>
+
+    <div class="detalle-producto" id="detalle-producto">
+      <!-- Se completa por JavaScript -->
+    </div>
+
+    <section class="relacionados">
+      <h2>También te puede interesar</h2>
+      <div class="grilla-productos" id="grilla-relacionados"></div>
+    </section>
+  </div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__inferior">
+      <span>© <span data-anio></span> Glitch Store. Proyecto académico DSY1104.</span>
+      <a href="contacto.html">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/validaciones.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const parametros = new URLSearchParams(window.location.search);
+  const codigo = parametros.get("codigo");
+  const producto = PRODUCTOS.find((p) => p.codigo === codigo) || PRODUCTOS[0];
+
+  document.title = `${producto.nombre} — Glitch Store`;
+  document.getElementById("miga-nombre").textContent = producto.nombre;
+
+  const stockCritico = producto.stock <= producto.stockCritico;
+
+  document.getElementById("detalle-producto").innerHTML = `
+    <div>
+      <div class="detalle-producto__galeria-principal">
+        <img src="${producto.imagen}" alt="${producto.nombre}" style="max-width:70%;">
+      </div>
+      <div class="detalle-producto__miniaturas">
+        <img src="${producto.imagen}" alt="Miniatura 1">
+        <img src="${producto.imagen}" alt="Miniatura 2">
+        <img src="${producto.imagen}" alt="Miniatura 3">
+      </div>
+    </div>
+    <div>
+      <p class="detalle-producto__categoria">${producto.categoria}</p>
+      <h1>${producto.nombre}</h1>
+      <p class="detalle-producto__precio">${formatoCLP(producto.precio)}</p>
+      <p>${producto.descripcion}</p>
+      <p class="detalle-producto__stock ${stockCritico ? "detalle-producto__stock--critico" : ""}">
+        ${stockCritico ? "¡Quedan pocas unidades!" : "Disponible"} · Stock: ${producto.stock}
+      </p>
+      <div class="detalle-producto__cantidad">
+        <span>Cantidad</span>
+        <div class="selector-cantidad">
+          <button type="button" id="btn-menos" aria-label="Disminuir cantidad">−</button>
+          <input type="number" id="input-cantidad" value="1" min="1" max="${producto.stock}" readonly>
+          <button type="button" id="btn-mas" aria-label="Aumentar cantidad">+</button>
+        </div>
+      </div>
+      <button type="button" class="boton boton--ocre boton--ancho" id="btn-agregar-carrito">Añadir al carrito</button>
+    </div>
+  `;
+
+  const inputCantidad = document.getElementById("input-cantidad");
+  document.getElementById("btn-menos").addEventListener("click", () => {
+    inputCantidad.value = Math.max(1, Number(inputCantidad.value) - 1);
+  });
+  document.getElementById("btn-mas").addEventListener("click", () => {
+    inputCantidad.value = Math.min(producto.stock, Number(inputCantidad.value) + 1);
+  });
+  document.getElementById("btn-agregar-carrito").addEventListener("click", (e) => {
+    agregarAlCarrito(producto.codigo, Number(inputCantidad.value));
+    e.target.textContent = "Añadido al carrito ✓";
+    setTimeout(() => (e.target.textContent = "Añadir al carrito"), 1400);
+  });
+
+  const relacionados = PRODUCTOS.filter((p) => p.categoria === producto.categoria && p.codigo !== producto.codigo).slice(0, 4);
+  renderGrillaProductos("grilla-relacionados", relacionados.length ? relacionados : PRODUCTOS.filter(p => p.codigo !== producto.codigo).slice(0,4));
+</script>
+</body>
+</html>

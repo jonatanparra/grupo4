@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<title>Mi carrito — Glitch Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <nav class="nav">
+    <a href="index.html" class="marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="productos.html">Productos</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="blogs.html">Blogs</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div class="nav-acciones">
+      <div class="nav-acciones__auth">
+        <a href="login.html">Iniciar sesión</a>
+        <a href="registro.html">Registrarse</a>
+      </div>
+      <a href="carrito.html" class="carrito-boton">🛒 <span data-carrito-contador>0</span></a>
+    </div>
+  </nav>
+</header>
+
+<main class="seccion">
+  <div class="contenedor">
+    <h1>Mi carrito de compras</h1>
+    <div id="contenido-carrito"></div>
+  </div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__inferior">
+      <span>© <span data-anio></span> Glitch Store. Proyecto académico DSY1104.</span>
+      <a href="contacto.html">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/validaciones.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/main.js"></script>
+<script>
+  function renderCarritoPagina() {
+    const carrito = obtenerCarrito();
+    const contenedor = document.getElementById("contenido-carrito");
+
+    if (carrito.length === 0) {
+      contenedor.innerHTML = `
+        <div class="carrito-vacio">
+          <h2>Tu carrito está vacío</h2>
+          <p>Explora nuestros productos y encuentra tu próximo juego favorito.</p>
+          <a href="productos.html" class="boton boton--ocre">Ver productos</a>
+        </div>
+      `;
+      return;
+    }
+
+    const filas = carrito
+      .map((item) => {
+        const producto = PRODUCTOS.find((p) => p.codigo === item.codigo);
+        if (!producto) return "";
+        return `
+          <div class="linea-carrito">
+            <img src="${producto.imagen}" alt="${producto.nombre}" class="linea-carrito__imagen">
+            <div>
+              <a href="detalle-producto.html?codigo=${producto.codigo}" class="linea-carrito__nombre">${producto.nombre}</a>
+              <div>
+                <button type="button" class="linea-carrito__quitar" data-quitar="${producto.codigo}">Quitar</button>
+              </div>
+            </div>
+            <div class="selector-cantidad">
+              <button type="button" data-menos="${producto.codigo}" aria-label="Disminuir">−</button>
+              <input type="number" value="${item.cantidad}" readonly>
+              <button type="button" data-mas="${producto.codigo}" aria-label="Aumentar">+</button>
+            </div>
+            <span class="linea-carrito__precio">${formatoCLP(producto.precio * item.cantidad)}</span>
+          </div>
+        `;
+      })
+      .join("");
+
+    const total = totalPrecioCarrito();
+
+    contenedor.innerHTML = `
+      <div class="carrito-layout">
+        <div>${filas}</div>
+        <div class="resumen-carrito">
+          <h3>Resumen del pedido</h3>
+          <div class="resumen-carrito__linea"><span>Subtotal</span><span>${formatoCLP(total)}</span></div>
+          <div class="resumen-carrito__linea"><span>Envío</span><span>A calcular</span></div>
+          <div class="resumen-carrito__total"><span>Total</span><span>${formatoCLP(total)}</span></div>
+          <div class="cupon">
+            <input type="text" placeholder="Cupón de descuento" aria-label="Cupón de descuento">
+            <button type="button" class="boton boton--contorno">Aplicar</button>
+          </div>
+          <button type="button" class="boton boton--ocre boton--ancho">Pagar</button>
+        </div>
+      </div>
+    `;
+
+    contenedor.querySelectorAll("[data-mas]").forEach((btn) =>
+      btn.addEventListener("click", () => cambiarCantidadCarrito(btn.dataset.mas, 1))
+    );
+    contenedor.querySelectorAll("[data-menos]").forEach((btn) =>
+      btn.addEventListener("click", () => cambiarCantidadCarrito(btn.dataset.menos, -1))
+    );
+    contenedor.querySelectorAll("[data-quitar]").forEach((btn) =>
+      btn.addEventListener("click", () => eliminarDelCarrito(btn.dataset.quitar))
+    );
+  }
+
+  renderCarritoPagina();
+</script>
+</body>
+</html>

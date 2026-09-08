@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../img/favicon.png" type="image/png">
+<title>Nuevo producto — Panel administrador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__marca"><img src="../img/logo.png" alt="Glitch Store" class="marca__logo"><span class="admin-sidebar__marca-tag">admin</span></div>
+    <nav>
+      <a href="home.html">📊 Dashboard</a>
+      <a href="productos.html">🎮 Productos</a>
+      <a href="usuarios.html">👤 Usuarios</a>
+    </nav>
+    <div class="admin-sidebar__pie">
+      <a href="../index.html">← Volver a la tienda</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-encabezado">
+      <h1>Nuevo producto</h1>
+      <a href="productos.html" class="boton boton--contorno">Volver al listado</a>
+    </div>
+
+    <form class="formulario" id="form-producto" style="max-width:640px;" novalidate>
+      <div class="mensaje-exito" id="mensaje-exito">Producto guardado correctamente.</div>
+
+      <div class="campo">
+        <label for="codigo">Código producto</label>
+        <input type="text" id="codigo" placeholder="Ej: PL-009">
+        <span class="ayuda-campo">Mínimo 3 caracteres, sin límite máximo.</span>
+        <span class="mensaje-error" id="codigo-error"></span>
+      </div>
+
+      <div class="campo">
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" maxlength="100">
+        <span class="mensaje-error" id="nombre-error"></span>
+      </div>
+
+      <div class="campo">
+        <label for="descripcion">Descripción <span class="opcional-etiqueta">(opcional)</span></label>
+        <textarea id="descripcion" maxlength="500"></textarea>
+        <span class="mensaje-error" id="descripcion-error"></span>
+      </div>
+
+      <div class="campo-dos-columnas">
+        <div class="campo">
+          <label for="precio">Precio</label>
+          <input type="number" id="precio" min="0" step="0.01" placeholder="0 = producto FREE">
+          <span class="mensaje-error" id="precio-error"></span>
+        </div>
+        <div class="campo">
+          <label for="categoria">Categoría</label>
+          <select id="categoria">
+            <option value="">-- Seleccione la categoría --</option>
+            <option>Terror</option>
+            <option>Acción</option>
+            <option>Narrativo</option>
+            <option>Indie</option>
+            <option>Multijugador</option>
+          </select>
+          <span class="mensaje-error" id="categoria-error"></span>
+        </div>
+      </div>
+
+      <div class="campo-dos-columnas">
+        <div class="campo">
+          <label for="stock">Stock</label>
+          <input type="number" id="stock" min="0" step="1">
+          <span class="mensaje-error" id="stock-error"></span>
+        </div>
+        <div class="campo">
+          <label for="stockCritico">Stock crítico <span class="opcional-etiqueta">(opcional)</span></label>
+          <input type="number" id="stockCritico" min="0" step="1">
+          <span class="ayuda-campo">Se mostrará una alerta cuando el stock llegue a este valor o menos.</span>
+          <span class="mensaje-error" id="stockCritico-error"></span>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="imagen">Imagen <span class="opcional-etiqueta">(opcional)</span></label>
+        <input type="file" id="imagen" accept="image/*">
+        <span class="mensaje-error" id="imagen-error"></span>
+      </div>
+
+      <button type="submit" class="boton boton--ocre boton--ancho">Guardar producto</button>
+    </form>
+  </main>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/validaciones.js"></script>
+<script src="../js/carrito.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  const reglas = {
+    codigo: () => validarRequerido(document.getElementById("codigo").value, "El código") || validarMinimo(document.getElementById("codigo").value, 3, "El código"),
+    nombre: () => validarRequerido(document.getElementById("nombre").value, "El nombre") || validarMaximo(document.getElementById("nombre").value, 100, "El nombre"),
+    descripcion: () => validarMaximo(document.getElementById("descripcion").value, 500, "La descripción"),
+    precio: () => validarNumero(document.getElementById("precio").value, { min: 0, etiqueta: "El precio" }),
+    categoria: () => validarRequerido(document.getElementById("categoria").value, "La categoría"),
+    stock: () => validarNumero(document.getElementById("stock").value, { min: 0, soloEntero: true, etiqueta: "El stock" }),
+    stockCritico: () => validarNumero(document.getElementById("stockCritico").value, { min: 0, soloEntero: true, etiqueta: "El stock crítico", requerido: false }),
+  };
+
+  Object.keys(reglas).forEach((id) => validarEnVivo(id, reglas[id]));
+
+  document.getElementById("form-producto").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const mensajeExito = document.getElementById("mensaje-exito");
+    if (validarFormulario(reglas)) {
+      mensajeExito.classList.add("mensaje-exito--visible");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      mensajeExito.classList.remove("mensaje-exito--visible");
+    }
+  });
+</script>
+</body>
+</html>

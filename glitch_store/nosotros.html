@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<title>Nosotros — Glitch Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <nav class="nav">
+    <a href="index.html" class="marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="productos.html">Productos</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="blogs.html">Blogs</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div class="nav-acciones">
+      <div class="nav-acciones__auth">
+        <a href="login.html">Iniciar sesión</a>
+        <a href="registro.html">Registrarse</a>
+      </div>
+      <a href="carrito.html" class="carrito-boton">🛒 <span data-carrito-contador>0</span></a>
+    </div>
+  </nav>
+</header>
+
+<main class="seccion">
+  <div class="contenedor detalle-producto">
+    <div>
+      <img src="img/nosotros.png" alt="Equipo de Glitch Store" style="border-radius: var(--radio);">
+    </div>
+    <div>
+      <h1>De un sótano con LAN party a una tienda online</h1>
+      <p>Empezamos en 2021 como un grupo de jugadores que se juntaba los viernes a maratonear terror y found footage en formato videojuego. De ahí quedó la costumbre: cazar títulos difíciles de encontrar, físicos y digitales, y compartirlos con quien se atreviera a jugarlos con las luces apagadas.</p>
+      <p>Hoy trabajamos con distribuidores y estudios independientes para traer catálogo de terror, acción y narrativa a precios justos, con despacho a todo Chile y retiro en tienda para quienes prefieren revisar la caja antes de llevársela.</p>
+
+      <h2 style="margin-top:32px;">El equipo de desarrollo</h2>
+      <p>Este sitio fue desarrollado como proyecto de la asignatura DSY1104 — Desarrollo Frontend, Escuela de Informática y Telecomunicaciones, DuocUC.</p>
+      <ul style="color:var(--texto-suave);">
+        <li>— Williams Rivera · Rol: Estructura HTML y estilos CSS</li>
+        <li>— Jonatan Parra · Rol: Validaciones JavaScript y carrito de compras</li>
+        <li>— Vicente Azócar · Rol: Vista de administrador y control de versiones</li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__inferior">
+      <span>© <span data-anio></span> Glitch Store. Proyecto académico DSY1104.</span>
+      <a href="contacto.html">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

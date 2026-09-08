@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<title>Crear cuenta — Glitch Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <nav class="nav">
+    <a href="index.html" class="marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="productos.html">Productos</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="blogs.html">Blogs</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div class="nav-acciones">
+      <a href="carrito.html" class="carrito-boton">🛒 <span data-carrito-contador>0</span></a>
+    </div>
+  </nav>
+</header>
+
+<main class="seccion centrado">
+  <div class="contenedor" style="display:flex; justify-content:center;">
+    <form class="formulario" id="form-registro" novalidate>
+      <p class="formulario__titulo">Crear una cuenta</p>
+
+      <div class="mensaje-exito" id="mensaje-exito">Cuenta creada correctamente. Ya puedes iniciar sesión.</div>
+
+      <div class="campo">
+        <label for="run">RUN (sin puntos ni guion)</label>
+        <input type="text" id="run" placeholder="Ej: 19011022K" maxlength="9">
+        <span class="mensaje-error" id="run-error"></span>
+      </div>
+
+      <div class="campo">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" maxlength="50">
+        <span class="mensaje-error" id="nombre-error"></span>
+      </div>
+
+      <div class="campo">
+        <label for="apellidos">Apellidos</label>
+        <input type="text" id="apellidos" maxlength="100">
+        <span class="mensaje-error" id="apellidos-error"></span>
+      </div>
+
+      <div class="campo">
+        <label for="correo">Correo</label>
+        <input type="email" id="correo" maxlength="100" placeholder="nombre@duoc.cl">
+        <span class="mensaje-error" id="correo-error"></span>
+      </div>
+
+      <div class="campo-dos-columnas">
+        <div class="campo">
+          <label for="contrasena">Contraseña</label>
+          <input type="password" id="contrasena" maxlength="10">
+          <span class="ayuda-campo">Entre 4 y 10 caracteres.</span>
+          <span class="mensaje-error" id="contrasena-error"></span>
+        </div>
+        <div class="campo">
+          <label for="confirmar">Confirmar contraseña</label>
+          <input type="password" id="confirmar" maxlength="10">
+          <span class="mensaje-error" id="confirmar-error"></span>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="telefono">Teléfono <span class="opcional-etiqueta">(opcional)</span></label>
+        <input type="tel" id="telefono" maxlength="15" placeholder="+56 9 1234 5678">
+        <span class="mensaje-error" id="telefono-error"></span>
+      </div>
+
+      <div class="campo-dos-columnas">
+        <div class="campo">
+          <label for="region">Región</label>
+          <select id="region">
+            <option value="">-- Seleccione la región --</option>
+          </select>
+          <span class="mensaje-error" id="region-error"></span>
+        </div>
+        <div class="campo">
+          <label for="comuna">Comuna</label>
+          <select id="comuna">
+            <option value="">-- Seleccione la comuna --</option>
+          </select>
+          <span class="mensaje-error" id="comuna-error"></span>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="direccion">Dirección</label>
+        <input type="text" id="direccion" maxlength="300">
+        <span class="mensaje-error" id="direccion-error"></span>
+      </div>
+
+      <button type="submit" class="boton boton--ocre boton--ancho">Registrar</button>
+      <p style="text-align:center; margin-top:16px; font-size:0.9rem;">
+        ¿Ya tienes cuenta? <a href="login.html" style="color:var(--verde-musgo); font-weight:600;">Inicia sesión</a>
+      </p>
+    </form>
+  </div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__inferior">
+      <span>© <span data-anio></span> Glitch Store. Proyecto académico DSY1104.</span>
+      <a href="contacto.html">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/validaciones.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/main.js"></script>
+<script>
+  // --- Cargar regiones ---
+  const selectRegion = document.getElementById("region");
+  const selectComuna = document.getElementById("comuna");
+
+  REGIONES.forEach((r) => {
+    const opt = document.createElement("option");
+    opt.value = r.id;
+    opt.textContent = r.nombre;
+    selectRegion.appendChild(opt);
+  });
+
+  function cargarComunas() {
+    const region = REGIONES.find((r) => r.id === selectRegion.value);
+    selectComuna.innerHTML = '<option value="">-- Seleccione la comuna --</option>';
+    if (region) {
+      region.comunas.forEach((c) => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.nombre;
+        selectComuna.appendChild(opt);
+      });
+    }
+  }
+  selectRegion.addEventListener("change", cargarComunas);
+
+  // --- Reglas de validación ---
+  const reglas = {
+    run: () => validarRun(document.getElementById("run").value),
+    nombre: () => validarRequerido(document.getElementById("nombre").value, "El nombre") || validarMaximo(document.getElementById("nombre").value, 50, "El nombre"),
+    apellidos: () => validarRequerido(document.getElementById("apellidos").value, "Los apellidos") || validarMaximo(document.getElementById("apellidos").value, 100, "Los apellidos"),
+    correo: () => validarCorreo(document.getElementById("correo").value, true) || validarMaximo(document.getElementById("correo").value, 100, "El correo"),
+    contrasena: () => validarContrasena(document.getElementById("contrasena").value),
+    confirmar: () => validarConfirmacion(document.getElementById("confirmar").value, document.getElementById("contrasena").value),
+    telefono: () => {
+      const v = document.getElementById("telefono").value;
+      if (!v) return "";
+      return /^[0-9+\s]{7,15}$/.test(v) ? "" : "Ingresa un teléfono válido (solo números, + y espacios).";
+    },
+    region: () => validarRequerido(document.getElementById("region").value, "La región"),
+    comuna: () => validarRequerido(document.getElementById("comuna").value, "La comuna"),
+    direccion: () => validarRequerido(document.getElementById("direccion").value, "La dirección") || validarMaximo(document.getElementById("direccion").value, 300, "La dirección"),
+  };
+
+  Object.keys(reglas).forEach((id) => validarEnVivo(id, reglas[id]));
+
+  document.getElementById("form-registro").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const esValido = validarFormulario(reglas);
+    const mensajeExito = document.getElementById("mensaje-exito");
+    if (esValido) {
+      mensajeExito.classList.add("mensaje-exito--visible");
+      e.target.reset();
+      cargarComunas();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      mensajeExito.classList.remove("mensaje-exito--visible");
+    }
+  });
+</script>
+</body>
+</html>

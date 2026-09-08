@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../img/favicon.png" type="image/png">
+<title>Mostrar usuario — Panel administrador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__marca"><img src="../img/logo.png" alt="Glitch Store" class="marca__logo"><span class="admin-sidebar__marca-tag">admin</span></div>
+    <nav>
+      <a href="home.html">📊 Dashboard</a>
+      <a href="productos.html">🎮 Productos</a>
+      <a href="usuarios.html" class="activo">👤 Usuarios</a>
+    </nav>
+    <div class="admin-sidebar__pie">
+      <a href="../index.html">← Volver a la tienda</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-encabezado">
+      <h1>Mostrar usuario</h1>
+      <a href="usuarios.html" class="boton boton--contorno">Volver al listado</a>
+    </div>
+
+    <div class="admin-panel" id="ficha-usuario">
+      <!-- Se completa por JavaScript -->
+    </div>
+  </main>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/carrito.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  const parametros = new URLSearchParams(window.location.search);
+  const run = parametros.get("run");
+  const usuario = USUARIOS.find((u) => u.run === run) || USUARIOS[0];
+
+  const region = REGIONES.find((r) => r.id === usuario.region);
+  const comuna = region ? region.comunas.find((c) => c.id === usuario.comuna) : null;
+
+  document.getElementById("ficha-usuario").innerHTML = `
+    <div style="display:flex; align-items:center; gap:16px; margin-bottom:28px;">
+      <div style="width:56px; height:56px; border-radius:50%; background:var(--salvia-fondo); border:1px solid var(--borde); display:flex; align-items:center; justify-content:center; font-family:var(--fuente-display); font-size:1.3rem; color:var(--verde-musgo);">
+        ${usuario.nombre.charAt(0)}${usuario.apellidos.charAt(0)}
+      </div>
+      <div>
+        <h2 style="margin-bottom:4px;">${usuario.nombre} ${usuario.apellidos}</h2>
+        <span class="etiqueta-rol">${usuario.tipo}</span>
+      </div>
+    </div>
+
+    <dl class="ficha-detalle">
+      <div class="ficha-detalle__campo">
+        <dt>RUN</dt>
+        <dd>${usuario.run}</dd>
+      </div>
+      <div class="ficha-detalle__campo">
+        <dt>Correo</dt>
+        <dd>${usuario.correo}</dd>
+      </div>
+      <div class="ficha-detalle__campo">
+        <dt>Región</dt>
+        <dd>${region ? region.nombre : "—"}</dd>
+      </div>
+      <div class="ficha-detalle__campo">
+        <dt>Comuna</dt>
+        <dd>${comuna ? comuna.nombre : "—"}</dd>
+      </div>
+      <div class="ficha-detalle__campo ficha-detalle__campo--ancho">
+        <dt>Dirección</dt>
+        <dd>${usuario.direccion}</dd>
+      </div>
+    </dl>
+
+    <a href="editar-usuario.html?run=${usuario.run}" class="boton boton--ocre">Editar este usuario</a>
+  `;
+</script>
+</body>
+</html>

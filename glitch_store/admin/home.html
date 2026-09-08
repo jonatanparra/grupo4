@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="../img/favicon.png" type="image/png">
+<title>Panel administrador — Glitch Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__marca"><img src="../img/logo.png" alt="Glitch Store" class="marca__logo"><span class="admin-sidebar__marca-tag">admin</span></div>
+    <nav>
+      <a href="home.html">📊 Dashboard</a>
+      <a href="productos.html">🎮 Productos</a>
+      <a href="usuarios.html">👤 Usuarios</a>
+    </nav>
+    <div class="admin-sidebar__pie">
+      <a href="../index.html">← Volver a la tienda</a>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <div class="admin-encabezado">
+      <h1>¡Hola, Administrador!</h1>
+      <span class="admin-rol">Rol: Administrador</span>
+    </div>
+
+    <div class="admin-tarjetas">
+      <div class="admin-tarjeta">
+        <div class="admin-tarjeta__valor" id="total-productos">0</div>
+        <div class="admin-tarjeta__etiqueta">Productos publicados</div>
+      </div>
+      <div class="admin-tarjeta">
+        <div class="admin-tarjeta__valor" id="total-usuarios">0</div>
+        <div class="admin-tarjeta__etiqueta">Usuarios registrados</div>
+      </div>
+      <div class="admin-tarjeta">
+        <div class="admin-tarjeta__valor" id="total-criticos">0</div>
+        <div class="admin-tarjeta__etiqueta">Productos con stock crítico</div>
+      </div>
+    </div>
+
+    <div class="admin-panel">
+      <h2 style="margin-top:0;">Productos con stock crítico</h2>
+      <table class="tabla-admin">
+        <thead>
+          <tr><th>Código</th><th>Nombre</th><th>Categoría</th><th>Stock</th><th>Acciones</th></tr>
+        </thead>
+        <tbody id="tabla-criticos"></tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script src="../js/data.js"></script>
+<script src="../js/carrito.js"></script>
+<script src="js/admin.js"></script>
+<script>
+  document.getElementById("total-productos").textContent = PRODUCTOS.length;
+  document.getElementById("total-usuarios").textContent = USUARIOS.length;
+
+  const criticos = PRODUCTOS.filter((p) => p.stock <= p.stockCritico);
+  document.getElementById("total-criticos").textContent = criticos.length;
+
+  document.getElementById("tabla-criticos").innerHTML = criticos.length
+    ? criticos.map(filaProductoHTML).join("")
+    : `<tr><td colspan="5" style="color:var(--texto-suave);">No hay productos con stock crítico por ahora.</td></tr>`;
+</script>
+</body>
+</html>

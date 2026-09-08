@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<title>Contacto — Glitch Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <nav class="nav">
+    <a href="index.html" class="marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="productos.html">Productos</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="blogs.html">Blogs</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div class="nav-acciones">
+      <div class="nav-acciones__auth">
+        <a href="login.html">Iniciar sesión</a>
+        <a href="registro.html">Registrarse</a>
+      </div>
+      <a href="carrito.html" class="carrito-boton">🛒 <span data-carrito-contador>0</span></a>
+    </div>
+  </nav>
+</header>
+
+<main class="seccion centrado">
+  <div class="contenedor" style="display:flex; flex-direction:column; align-items:center;">
+    <div style="text-align:center; margin-bottom:20px;">
+      <img src="img/logo.png" alt="Glitch Store" style="height:44px; margin:0 auto 8px; display:block;">
+    </div>
+    <form class="formulario" id="form-contacto" novalidate>
+      <p class="formulario__titulo">Formulario de contacto</p>
+
+      <div class="mensaje-exito" id="mensaje-exito">¡Gracias! Recibimos tu mensaje y te responderemos a la brevedad.</div>
+
+      <div class="campo">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" maxlength="100">
+        <span class="mensaje-error" id="nombre-error"></span>
+      </div>
+
+      <div class="campo">
+        <label for="correo">Correo <span class="opcional-etiqueta">(opcional)</span></label>
+        <input type="email" id="correo" maxlength="100" placeholder="nombre@duoc.cl">
+        <span class="mensaje-error" id="correo-error"></span>
+      </div>
+
+      <div class="campo">
+        <label for="mensaje">Mensaje</label>
+        <textarea id="mensaje" maxlength="500"></textarea>
+        <span class="ayuda-campo" id="contador-mensaje">0 / 500 caracteres</span>
+        <span class="mensaje-error" id="mensaje-error"></span>
+      </div>
+
+      <button type="submit" class="boton boton--ocre boton--ancho">Enviar mensaje</button>
+    </form>
+  </div>
+</main>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__inferior">
+      <span>© <span data-anio></span> Glitch Store. Proyecto académico DSY1104.</span>
+      <a href="contacto.html">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/validaciones.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/main.js"></script>
+<script>
+  const reglas = {
+    nombre: () => validarRequerido(document.getElementById("nombre").value, "El nombre") || validarMaximo(document.getElementById("nombre").value, 100, "El nombre"),
+    correo: () => validarCorreo(document.getElementById("correo").value, false) || validarMaximo(document.getElementById("correo").value, 100, "El correo"),
+    mensaje: () => validarRequerido(document.getElementById("mensaje").value, "El mensaje") || validarMaximo(document.getElementById("mensaje").value, 500, "El mensaje"),
+  };
+
+  Object.keys(reglas).forEach((id) => validarEnVivo(id, reglas[id]));
+
+  const areaMensaje = document.getElementById("mensaje");
+  const contador = document.getElementById("contador-mensaje");
+  areaMensaje.addEventListener("input", () => {
+    contador.textContent = `${areaMensaje.value.length} / 500 caracteres`;
+  });
+
+  document.getElementById("form-contacto").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const mensajeExito = document.getElementById("mensaje-exito");
+    if (validarFormulario(reglas)) {
+      mensajeExito.classList.add("mensaje-exito--visible");
+      e.target.reset();
+      contador.textContent = "0 / 500 caracteres";
+    } else {
+      mensajeExito.classList.remove("mensaje-exito--visible");
+    }
+  });
+</script>
+</body>
+</html>

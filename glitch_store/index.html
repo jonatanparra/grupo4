@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="img/favicon.png" type="image/png">
+<title>Glitch Store — Tienda de videojuegos</title>
+<meta name="description" content="Glitch Store: tienda online de videojuegos, con foco en terror, acción y narrativa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="encabezado">
+  <nav class="nav">
+    <a href="index.html" class="marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></a>
+    <button class="nav-toggle" aria-label="Abrir menú" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="productos.html">Productos</a></li>
+      <li><a href="nosotros.html">Nosotros</a></li>
+      <li><a href="blogs.html">Blogs</a></li>
+      <li><a href="contacto.html">Contacto</a></li>
+    </ul>
+    <div class="nav-acciones">
+      <div class="nav-acciones__auth">
+        <a href="login.html">Iniciar sesión</a>
+        <a href="registro.html">Registrarse</a>
+      </div>
+      <a href="carrito.html" class="carrito-boton">🛒 <span data-carrito-contador>0</span></a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="contenedor">
+    <div>
+      <h1>Juega con las luces apagadas</h1>
+      <p>Seleccionamos videojuegos de terror, acción y narrativa para quienes buscan algo más que otro estreno del momento. Catálogo curado, precios justos y despacho a todo Chile.</p>
+      <div class="hero__acciones">
+        <a href="productos.html" class="boton boton--ocre">Ver catálogo</a>
+        <a href="nosotros.html" class="boton boton--contorno" style="border-color:#fff;color:#fff;">Conócenos</a>
+      </div>
+    </div>
+    <div class="hero__visual">
+      <img src="img/logo-index.jpeg" alt="Ilustración de un control de videojuego">
+    </div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="seccion__encabezado">
+      <h2>Recién llegados a la tienda</h2>
+      <p>Una muestra de nuestro catálogo. Puedes ver el listado completo en la sección de productos.</p>
+    </div>
+    <div class="grilla-productos" id="grilla-destacados"></div>
+    <p style="text-align:center; margin-top:32px;">
+      <a href="productos.html" class="boton">Ver todos los productos</a>
+    </p>
+  </div>
+</section>
+
+<footer class="pie">
+  <div class="contenedor">
+    <div class="pie__grid">
+      <div>
+        <p class="pie__marca"><img src="img/logo.png" alt="Glitch Store" class="marca__logo"></p>
+        <p>Tienda online con despacho a todo Chile.</p>
+      </div>
+      <div>
+        <h4>Categorías</h4>
+        <ul>
+          <li><a href="productos.html">Terror</a></li>
+          <li><a href="productos.html">Acción</a></li>
+          <li><a href="productos.html">Multijugador</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="nosotros.html">Nosotros</a></li>
+          <li><a href="blogs.html">Blogs</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Mantente al día</h4>
+        <p>Lanzamientos, ofertas y noticias del catálogo.</p>
+        <form class="pie__newsletter" onsubmit="return false;">
+          <input type="email" placeholder="Tu correo" aria-label="Correo para newsletter">
+          <button type="submit" class="boton boton--ocre">Unirme</button>
+        </form>
+      </div>
+    </div>
+    <div class="pie__inferior">
+      <span>© <span data-anio></span> Glitch Store. Proyecto académico DSY1104.</span>
+      <span>Santiago, Chile</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/validaciones.js"></script>
+<script src="js/carrito.js"></script>
+<script src="js/main.js"></script>
+<script>
+  renderGrillaProductos("grilla-destacados", PRODUCTOS.slice(0, 8));
+</script>
+</body>
+</html>
