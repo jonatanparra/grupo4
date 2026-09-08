@@ -91,7 +91,7 @@ const PRODUCTOS = [
     stock: 35,
     stockCritico: 7,
     descripcion:
-      "* Juego de acción frenética con vista cenital, combates rápidos, alta dificultad y una estética retro llena de violencia estilizada.",
+      "Juego de acción frenética con vista cenital, combates rápidos, alta dificultad y una estética retro llena de violencia estilizada.",
     imagen: "img/juegos/GS-008.jpg",
   },
   {
