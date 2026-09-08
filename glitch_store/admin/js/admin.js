@@ -1,5 +1,5 @@
 /* =========================================================
-   FOLLAJE ADMIN — comportamiento común del panel
+   Glitch ADMIN — comportamiento común del panel
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {

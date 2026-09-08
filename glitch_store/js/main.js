@@ -1,5 +1,5 @@
 /* =========================================================
-   FOLLAJE — Comportamiento general del sitio
+   Glitch — Comportamiento general del sitio
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {

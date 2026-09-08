@@ -1,9 +1,3 @@
-/* =========================================================
-   FOLLAJE — Validaciones reutilizables
-   Todas las funciones devuelven "" si el valor es válido,
-   o un mensaje de error/sugerencia si no lo es.
-   ========================================================= */
-
 /** Verifica que el valor no esté vacío (quitando espacios). */
 function validarRequerido(valor, etiqueta = "Este campo") {
   if (!valor || valor.trim() === "") {

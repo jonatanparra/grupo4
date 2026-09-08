@@ -1,13 +1,13 @@
 /* =========================================================
-   FOLLAJE — Carrito de compras (localStorage)
+   Glitch — Carrito de compras (localStorage)
    Reglas del carrito:
    - Se identifica cada línea por el código de producto.
    - La cantidad mínima por línea es 1; al bajar de 1 se elimina la línea.
    - La cantidad máxima por línea queda limitada al stock disponible.
-   - El carrito se guarda en localStorage bajo la clave "follaje_carrito".
+   - El carrito se guarda en localStorage bajo la clave "Glitch_carrito".
    ========================================================= */
 
-const CARRITO_KEY = "follaje_carrito";
+const CARRITO_KEY = "Glitch_carrito";
 
 function obtenerCarrito() {
   try {

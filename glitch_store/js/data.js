@@ -14,7 +14,7 @@ const PRODUCTOS = [
     stock: 22,
     stockCritico: 5,
     descripcion:
-      "Cilantro1",
+      "Aventura de acción y exploración en 2D donde debes recorrer un reino subterráneo, enfrentarte a criaturas y descubrir sus secretos.",
     imagen: "img/juegos/GS-001.jpg",
   },
   {
@@ -25,7 +25,7 @@ const PRODUCTOS = [
     stock: 30,
     stockCritico: 6,
     descripcion:
-      "Cilantro2",
+      "Aventura de acción en 2D protagonizada por Hornet, con nuevos escenarios, enemigos, habilidades y combates desafiantes.",
     imagen: "img/juegos/GS-002.webp",
   },
   {
@@ -36,7 +36,7 @@ const PRODUCTOS = [
     stock: 18,
     stockCritico: 4,
     descripcion:
-      "Terror psicológico narrativo sobre una familia que vuelve a un pueblo que ya no figura en los mapas. Pocos monstruos, mucha atmósfera y decisiones que cambian el final.",
+      "Aventura narrativa basada en decisiones, donde tus elecciones afectan la historia y las relaciones entre los personajes.",
     imagen: "img/juegos/GS-003.jpg",
   },
   {
@@ -47,7 +47,7 @@ const PRODUCTOS = [
     stock: 25,
     stockCritico: 5,
     descripcion:
-      "Hack and slash de terror gótico: combate rápido, criaturas que sangran luz roja y un ritmo pensado para sesiones intensas de una sentada.",
+      "Survival horror en primera persona donde debes escapar de peligros explorando un manicomio, sin posibilidad de combatir directamente.",
     imagen: "img/juegos/GS-004.jpg",
   },
   {
@@ -58,7 +58,7 @@ const PRODUCTOS = [
     stock: 16,
     stockCritico: 3,
     descripcion:
-      "Shooter en tercera persona ambientado en una instalación militar abandonada. Cobertura táctica, enemigos que aprenden tus patrones y jefes de sector.",
+      "Aventura de mundo abierto ambientada en el Lejano Oeste, centrada en la exploración, acción y una historia sobre forajidos.",
     imagen: "img/juegos/GS-005.jpg",
   },
   {
@@ -69,7 +69,7 @@ const PRODUCTOS = [
     stock: 40,
     stockCritico: 8,
     descripcion:
-      "Roguelike de terror: cada partida genera un mapa distinto y amenazas nuevas, así que memorizar rutas no te va a salvar dos veces seguidas.",
+      "RPG de acción desafiante donde debes explorar un mundo oscuro, combatir enemigos difíciles y aprender de cada derrota.",
     imagen: "img/juegos/GS-006.jpg",
   },
   {
@@ -80,7 +80,7 @@ const PRODUCTOS = [
     stock: 20,
     stockCritico: 4,
     descripcion:
-      "Walking simulator de tensión dentro de un hospital psiquiátrico cerrado. Casi no hay combate: la exploración lenta y el sonido ambiental hacen todo el trabajo.",
+      "Survival horror centrado en la exploración, resolución de puzles y supervivencia frente a zombis y criaturas.",
     imagen: "img/juegos/GS-007.jpg",
   },
   {
@@ -91,7 +91,7 @@ const PRODUCTOS = [
     stock: 35,
     stockCritico: 7,
     descripcion:
-      "Terror indie en pixel art sobre una radio comunitaria que empieza a transmitir voces que nadie grabó. Corto, directo y pensado para una sola sesión.",
+      "* Juego de acción frenética con vista cenital, combates rápidos, alta dificultad y una estética retro llena de violencia estilizada.",
     imagen: "img/juegos/GS-008.jpg",
   },
   {

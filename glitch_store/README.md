@@ -20,7 +20,7 @@ python3 -m http.server 8000
 ## Estructura del proyecto
 
 ```
-follaje/
+Glitch/
 ├── index.html                Página principal (home)
 ├── productos.html             Listado de productos con filtro por categoría
 ├── detalle-producto.html      Detalle de un producto (lee ?codigo=)
