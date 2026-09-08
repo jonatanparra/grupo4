@@ -454,7 +454,7 @@ p { margin: 0 0 1em; max-width: 65ch; color: var(--texto-suave); }
 .tarjeta-blog__cuerpo p { flex: 1; }
 
 .articulo-blog { max-width: 72ch; margin: 0 auto; }
-.articulo-blog__imagen { border-radius: var(--radio); margin-bottom: 24px; background: var(--salvia-fondo); }
+.articulo-blog__imagen { display: block; width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--radio); margin-bottom: 24px; background: var(--salvia-fondo); }
 .articulo-blog p { max-width: none; color: var(--texto); }
 
 /* 11. CARRITO --------------------------------------------------- */
