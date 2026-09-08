@@ -10,7 +10,7 @@ const PRODUCTOS = [
     codigo: "GS-001",
     nombre: "Hollow Knight",
     categoria: "Indie",
-    precio: 34990,
+    precio: 13990,
     stock: 22,
     stockCritico: 5,
     descripcion:
@@ -21,7 +21,7 @@ const PRODUCTOS = [
     codigo: "GS-002",
     nombre: "Hollow Knight - Silksong",
     categoria: "Indie",
-    precio: 27990,
+    precio: 14990,
     stock: 30,
     stockCritico: 6,
     descripcion:
@@ -32,7 +32,7 @@ const PRODUCTOS = [
     codigo: "GS-003",
     nombre: "Life is Strange Remastered Collection",
     categoria: "Narrativo",
-    precio: 29990,
+    precio: 7990,
     stock: 18,
     stockCritico: 4,
     descripcion:
@@ -43,7 +43,7 @@ const PRODUCTOS = [
     codigo: "GS-004",
     nombre: "Outlast",
     categoria: "Terror",
-    precio: 39990,
+    precio:  13990,
     stock: 25,
     stockCritico: 5,
     descripcion:
@@ -54,7 +54,7 @@ const PRODUCTOS = [
     codigo: "GS-005",
     nombre: "Red Dead Redemption II",
     categoria: "Acción",
-    precio: 44990,
+    precio: 22990,
     stock: 16,
     stockCritico: 3,
     descripcion:
@@ -76,7 +76,7 @@ const PRODUCTOS = [
     codigo: "GS-007",
     nombre: "Resident Evil II",
     categoria: "Terror",
-    precio: 24990,
+    precio: 22900,
     stock: 20,
     stockCritico: 4,
     descripcion:
@@ -98,7 +98,7 @@ const PRODUCTOS = [
     codigo: "GS-009",
     nombre: "Shadow Of The Colssus",
     categoria: "Narrativo",
-    precio: 32990,
+    precio: 16990,
     stock: 28,
     stockCritico: 6,
     descripcion:
@@ -109,7 +109,7 @@ const PRODUCTOS = [
     codigo: "GS-010",
     nombre: "Dragon Ball Figther Z",
     categoria: "Multijugador",
-    precio: 22990,
+    precio: 19990,
     stock: 24,
     stockCritico: 5,
     descripcion:
@@ -131,7 +131,7 @@ const PRODUCTOS = [
     codigo: "GS-012",
     nombre: "Call of Dutty Black OPS III",
     categoria: "Multijugador",
-    precio: 26990,
+    precio: 14990 ,
     stock: 32,
     stockCritico: 6,
     descripcion:
