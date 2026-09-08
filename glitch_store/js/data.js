@@ -14,7 +14,7 @@ const PRODUCTOS = [
     stock: 22,
     stockCritico: 5,
     descripcion:
-      "Cilantro",
+      "Cilantro1",
     imagen: "img/juegos/GS-001.jpg",
   },
   {
@@ -25,7 +25,7 @@ const PRODUCTOS = [
     stock: 30,
     stockCritico: 6,
     descripcion:
-      "Terror found footage: revisas grabaciones de cámaras de seguridad de un turno nocturno que salió mal, buscando pistas antes de que se acabe la cinta.",
+      "Cilantro2",
     imagen: "img/juegos/GS-002.webp",
   },
   {
