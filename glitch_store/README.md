@@ -43,6 +43,11 @@ Glitch/
 │   ├── favicon.png                Ícono recortado del logo, usado como favicon
 │   ├── juegos/                    Portadas SVG de cada videojuego del catálogo
 │   └── ...                        Ilustraciones de hero, nosotros y blogs
+├── video/
+│   ├──VideoBlog-1.mp4           Video blog 1  
+│   ├──VideoBlog-2.mp4           Video blog 2
+│   ├──VideoBlog-3.mp4           Video blog 3  
+|
 └── admin/                        Vista administrador (protegida conceptualmente)
     ├── home.html                  Dashboard con métricas y stock crítico
     ├── productos.html              Listado de productos (mantenedor)
