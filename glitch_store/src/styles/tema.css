@@ -1,0 +1,356 @@
+/* =========================================================
+   Glitch Store — Tema sobre Bootstrap 5
+   Bootstrap aporta la grilla, componentes y responsividad.
+   Este archivo solo personaliza colores (paleta horror/glitch),
+   tipografía y algunos detalles visuales propios de la tienda.
+   ========================================================= */
+
+/* 1. TOKENS: se sobreescriben las variables de Bootstrap en modo oscuro */
+:root,
+[data-bs-theme="dark"] {
+  --glitch-fondo: #0a0000;
+  --glitch-superficie: #150707;
+  --glitch-superficie-alta: #1d0b0b;
+  --glitch-acento: #b30000;
+  --glitch-acento-hover: #8c0000;
+  --glitch-brillo: #ff3b3b;
+  --glitch-borde: #3a1414;
+  --glitch-texto: #e8e8e8;
+  --glitch-texto-suave: #b7a9a9;
+
+  --bs-body-bg: var(--glitch-fondo);
+  --bs-body-color: var(--glitch-texto);
+  --bs-secondary-color: var(--glitch-texto-suave);
+  --bs-border-color: var(--glitch-borde);
+  --bs-link-color: #ff5c5c;
+  --bs-link-color-rgb: 255, 92, 92;
+  --bs-link-hover-color: var(--glitch-brillo);
+  --bs-link-hover-color-rgb: 255, 59, 59;
+  --bs-heading-color: #f2ecec;
+  --bs-body-font-family: "Inter", "Segoe UI", sans-serif;
+  --bs-focus-ring-color: rgba(179, 0, 0, 0.4);
+  --bs-tertiary-bg: var(--glitch-superficie-alta);
+}
+
+body {
+  background: var(--glitch-fondo);
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+  font-family: "Chakra Petch", "Segoe UI", sans-serif;
+  font-weight: 600;
+}
+
+p {
+  color: var(--glitch-texto-suave);
+}
+
+a {
+  text-decoration: none;
+}
+
+/* 2. COMPONENTES BOOTSTRAP CON LA PALETA */
+.card,
+.list-group-item {
+  --bs-card-bg: var(--glitch-superficie);
+  --bs-list-group-bg: var(--glitch-superficie);
+  --bs-card-border-color: var(--glitch-borde);
+  border-color: var(--glitch-borde);
+}
+
+.form-control,
+.form-select,
+.input-group-text {
+  background-color: var(--glitch-superficie);
+  border-color: var(--glitch-borde);
+  color: var(--glitch-texto);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--glitch-superficie);
+  border-color: var(--glitch-acento);
+  box-shadow: 0 0 0 0.2rem rgba(179, 0, 0, 0.3);
+  color: var(--glitch-texto);
+}
+
+.form-check-input:checked {
+  background-color: var(--glitch-acento);
+  border-color: var(--glitch-acento);
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-hover-bg: rgba(179, 0, 0, 0.08);
+}
+
+.breadcrumb {
+  --bs-breadcrumb-divider-color: var(--glitch-texto-suave);
+  --bs-breadcrumb-item-active-color: var(--glitch-texto-suave);
+}
+
+/* Botón principal de la marca */
+.btn-glitch {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--glitch-acento);
+  --bs-btn-border-color: var(--glitch-acento);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--glitch-acento-hover);
+  --bs-btn-hover-border-color: var(--glitch-acento-hover);
+  --bs-btn-active-bg: var(--glitch-acento-hover);
+  --bs-btn-active-border-color: var(--glitch-acento-hover);
+  --bs-btn-disabled-bg: var(--glitch-acento);
+  --bs-btn-disabled-border-color: var(--glitch-acento);
+  --bs-btn-focus-shadow-rgb: 179, 0, 0;
+  font-weight: 600;
+}
+
+/* 3. ENCABEZADO */
+.encabezado {
+  background: var(--glitch-superficie);
+  border-bottom: 1px solid var(--glitch-borde);
+}
+
+.marca__logo {
+  height: 30px;
+  width: auto;
+}
+
+.navbar .nav-link {
+  color: var(--glitch-texto);
+  border-bottom: 2px solid transparent;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: #fff;
+  border-bottom-color: var(--glitch-acento);
+}
+
+.navbar-toggler {
+  border-color: var(--glitch-borde);
+}
+
+/* 4. HERO */
+.hero {
+  background: var(--glitch-superficie-alta);
+}
+
+.hero__titulo {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  animation: glitch-entrada 0.6s steps(2, end) 1;
+}
+
+.hero__imagen {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  width: 100%;
+}
+
+@keyframes glitch-entrada {
+  0% { text-shadow: 2px 0 var(--glitch-acento), -2px 0 #4a4a4a; transform: translateX(-2px); }
+  40% { text-shadow: -3px 0 var(--glitch-acento), 3px 0 #4a4a4a; transform: translateX(2px); }
+  70% { text-shadow: 1px 0 var(--glitch-acento), -1px 0 #4a4a4a; transform: translateX(-1px); }
+  100% { text-shadow: none; transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* 5. TARJETAS DE PRODUCTO Y CATEGORÍA */
+.tarjeta-producto,
+.tarjeta-categoria {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tarjeta-producto:hover,
+.tarjeta-categoria:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 2px 16px rgba(179, 0, 0, 0.25);
+}
+
+.tarjeta-producto__imagen-link {
+  background: var(--glitch-fondo);
+  display: block;
+}
+
+.tarjeta-producto__imagen {
+  aspect-ratio: 4 / 3.2;
+  object-fit: contain;
+  padding: 14px;
+}
+
+.tarjeta-producto__categoria {
+  color: #ff5c5c;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tarjeta-producto__nombre {
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #f2ecec;
+}
+
+.tarjeta-producto__nombre:hover {
+  text-decoration: underline;
+}
+
+.tarjeta-categoria__imagen {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.tarjeta-categoria h3 {
+  color: #f2ecec;
+}
+
+/* Precios */
+.precio__actual {
+  color: var(--glitch-brillo);
+  font-weight: 700;
+}
+
+.precio__anterior {
+  color: var(--glitch-texto-suave);
+  font-size: 0.85em;
+}
+
+.precio--grande .precio__actual {
+  font-family: "Chakra Petch", sans-serif;
+}
+
+/* 6. DETALLE, CARRITO Y BLOGS */
+.detalle-producto__galeria {
+  background: var(--glitch-superficie);
+  border: 1px solid var(--glitch-borde);
+}
+
+.detalle-producto__galeria img {
+  max-height: 460px;
+}
+
+.selector-cantidad {
+  max-width: 150px;
+}
+
+.linea-carrito__imagen {
+  background: var(--glitch-superficie);
+  aspect-ratio: 1;
+  object-fit: contain;
+  padding: 4px;
+}
+
+.linea-carrito__nombre {
+  color: #f2ecec;
+}
+
+@media (min-width: 992px) {
+  .resumen-carrito {
+    position: sticky;
+    top: 90px;
+  }
+}
+
+.ofertas-banner {
+  background: linear-gradient(120deg, var(--glitch-acento-hover), var(--glitch-superficie-alta) 70%);
+  border: 1px solid var(--glitch-borde);
+}
+
+.ofertas-banner p {
+  color: var(--glitch-texto);
+}
+
+.tarjeta-blog__imagen {
+  min-height: 220px;
+}
+
+.articulo-blog {
+  max-width: 820px;
+}
+
+.articulo-blog p {
+  color: var(--glitch-texto);
+}
+
+.formulario__logo {
+  height: 44px;
+  width: auto;
+}
+
+.estado-vacio p {
+  max-width: 50ch;
+}
+
+/* 7. PIE DE PÁGINA */
+.pie {
+  background: var(--glitch-superficie-alta);
+  padding: 48px 0 24px;
+}
+
+.pie a {
+  color: #d8c9c9;
+}
+
+.pie a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.pie__inferior {
+  border-top: 1px solid var(--glitch-acento);
+  padding-top: 20px;
+  color: #d8c9c9;
+}
+
+/* 8. PANEL ADMINISTRATIVO */
+.admin-sidebar {
+  background: var(--glitch-superficie-alta);
+  border-right: 1px solid var(--glitch-borde);
+}
+
+@media (min-width: 768px) {
+  .admin-sidebar > nav {
+    position: sticky;
+    top: 0;
+  }
+}
+
+.admin-sidebar__enlace {
+  color: #d8c9c9;
+  border-left: 3px solid transparent;
+  padding: 10px 20px;
+}
+
+.admin-sidebar__enlace:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.admin-sidebar__enlace.active {
+  background: rgba(255, 255, 255, 0.08);
+  border-left-color: var(--glitch-acento);
+  color: #fff;
+  font-weight: 600;
+}
+
+.tarjeta-estadistica__valor {
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 1.7rem;
+  color: #f2ecec;
+}
+
+.vista-previa-imagen {
+  max-height: 140px;
+  width: auto;
+}
+
+/* Al imprimir la boleta se ocultan navegación y botones */
+@media print {
+  .encabezado, .pie, .admin-sidebar, .btn { display: none !important; }
+  body, .card { background: #fff !important; color: #000 !important; }
+}
