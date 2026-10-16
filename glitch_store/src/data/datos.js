@@ -7,11 +7,11 @@
 
 // ---------- Categorías ----------
 export const CATEGORIAS = [
-  { id: "terror", nombre: "Terror", descripcion: "Survival horror y experiencias que te quitan el sueño.", imagen: "/img/juegos/GS-007.jpg" },
-  { id: "accion", nombre: "Acción", descripcion: "Mundos abiertos, combate y aventuras épicas.", imagen: "/img/juegos/GS-005.jpg" },
-  { id: "narrativo", nombre: "Narrativo", descripcion: "Historias donde cada decisión importa.", imagen: "/img/juegos/GS-003.jpg" },
-  { id: "indie", nombre: "Indie", descripcion: "Joyas de estudios independientes.", imagen: "/img/juegos/GS-001.jpg" },
-  { id: "multijugador", nombre: "Multijugador", descripcion: "Para jugar con (o contra) tus amigos.", imagen: "/img/juegos/GS-010.jpg" },
+  { id: "terror", nombre: "Terror", descripcion: "Survival horror y experiencias que te quitan el sueño.", imagen: "/img/categorias/terror.jpg" },
+  { id: "accion", nombre: "Acción", descripcion: "Mundos abiertos, combate y aventuras épicas.", imagen: "/img/categorias/accion.jpg" },
+  { id: "narrativo", nombre: "Narrativo", descripcion: "Historias donde cada decisión importa.", imagen: "/img/categorias/narrativo.jpg" },
+  { id: "indie", nombre: "Indie", descripcion: "Joyas de estudios independientes.", imagen: "/img/categorias/indie.jpg" },
+  { id: "multijugador", nombre: "Multijugador", descripcion: "Para jugar con (o contra) tus amigos.", imagen: "/img/categorias/multijugador.jpg" },
 ];
 
 // ---------- Productos ----------

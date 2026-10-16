@@ -1,39 +1,95 @@
-/* =========================================================
-   Glitch Store — Tema sobre Bootstrap 5
-   Bootstrap aporta la grilla, componentes y responsividad.
-   Este archivo solo personaliza colores (paleta horror/glitch),
-   tipografía y algunos detalles visuales propios de la tienda.
-   ========================================================= */
+/* 1. TOKENS */
 
-/* 1. TOKENS: se sobreescriben las variables de Bootstrap en modo oscuro */
 :root,
 [data-bs-theme="dark"] {
-  --glitch-fondo: #0a0000;
-  --glitch-superficie: #150707;
-  --glitch-superficie-alta: #1d0b0b;
-  --glitch-acento: #b30000;
-  --glitch-acento-hover: #8c0000;
-  --glitch-brillo: #ff3b3b;
-  --glitch-borde: #3a1414;
-  --glitch-texto: #e8e8e8;
-  --glitch-texto-suave: #b7a9a9;
+  --gs-negro: #080508;
+  --gs-morado-oscuro: #1b0a20;
+  --gs-naranja: #ff6500;
+  --gs-naranja-brillante: #ff9d00;
+  --gs-morado-neon: #a000ff;
+  --gs-lila: #b86bff;
+  --gs-rojo-glitch: #ff2b00;
+  --gs-fantasma: #f5f0f5;
 
-  --bs-body-bg: var(--glitch-fondo);
-  --bs-body-color: var(--glitch-texto);
-  --bs-secondary-color: var(--glitch-texto-suave);
-  --bs-border-color: var(--glitch-borde);
-  --bs-link-color: #ff5c5c;
-  --bs-link-color-rgb: 255, 92, 92;
-  --bs-link-hover-color: var(--glitch-brillo);
-  --bs-link-hover-color-rgb: 255, 59, 59;
-  --bs-heading-color: #f2ecec;
+  --gs-lila-claro: #d9b3ff;
+  --gs-morado-medio: #4a1d66;
+  --gs-borde: rgba(160, 0, 255, 0.55);
+  --gs-texto-suave: #cdbfd6;
+  --gs-brillo-neon: 0 0 16px rgba(160, 0, 255, 0.55);
+
+  --glitch-fondo: var(--gs-negro);
+  --glitch-superficie: var(--gs-morado-oscuro);
+  --glitch-superficie-alta: var(--gs-morado-oscuro);
+  --glitch-acento: var(--gs-naranja-brillante);
+  --glitch-acento-hover: var(--gs-morado-neon);
+  --glitch-brillo: var(--gs-naranja-brillante);
+  --glitch-borde: var(--gs-borde);
+  --glitch-texto: var(--gs-fantasma);
+  --glitch-texto-suave: var(--gs-texto-suave);
+
+  --bs-body-bg: var(--gs-negro);
+  --bs-body-color: var(--gs-fantasma);
+  --bs-secondary-color: var(--gs-texto-suave);
+  --bs-border-color: var(--gs-borde);
+  --bs-link-color: var(--gs-lila);
+  --bs-link-color-rgb: 184, 107, 255;
+  --bs-link-hover-color: var(--gs-lila-claro);
+  --bs-link-hover-color-rgb: 217, 179, 255;
+  --bs-heading-color: var(--gs-fantasma);
   --bs-body-font-family: "Inter", "Segoe UI", sans-serif;
-  --bs-focus-ring-color: rgba(179, 0, 0, 0.4);
-  --bs-tertiary-bg: var(--glitch-superficie-alta);
+  --bs-focus-ring-color: rgba(184, 107, 255, 0.45);
+  --bs-tertiary-bg: var(--gs-morado-oscuro);
+  --bs-primary-rgb: 160, 0, 255;
+  --bs-secondary-rgb: 74, 29, 102;
+  --bs-danger-rgb: 255, 43, 0;
+  --bs-dark-rgb: 8, 5, 8;
+  --bs-light-rgb: 245, 240, 245;
 }
 
 body {
-  background: var(--glitch-fondo);
+  background: var(--gs-negro);
+}
+
+body::before,
+body::after {
+  content: "";
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: min(300px, calc((100vw - 1320px) / 2));
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::before {
+  left: 0;
+  background-image: url("/img/lateral-izquierdo.png");
+  background-position: left center;
+  -webkit-mask-image: linear-gradient(to right, #000 65%, transparent);
+  mask-image: linear-gradient(to right, #000 65%, transparent);
+}
+
+body::after {
+  right: 0;
+  background-image: url("/img/lateral-derecho.png");
+  background-position: right center;
+  -webkit-mask-image: linear-gradient(to left, #000 65%, transparent);
+  mask-image: linear-gradient(to left, #000 65%, transparent);
+}
+
+@media (min-width: 1500px) {
+  body::before,
+  body::after {
+    display: block;
+  }
+}
+
+::selection {
+  background: var(--gs-morado-neon);
+  color: #fff;
 }
 
 h1, h2, h3, h4, h5, h6, .navbar-brand {
@@ -41,74 +97,229 @@ h1, h2, h3, h4, h5, h6, .navbar-brand {
   font-weight: 600;
 }
 
+h1,
+h2 {
+  font-family: "Press Start 2P", "Chakra Petch", monospace;
+  font-weight: 400;
+  line-height: 1.5;
+  text-shadow: 0 0 14px rgba(160, 0, 255, 0.55);
+}
+
+h1 { font-size: clamp(1.1rem, 2.6vw, 1.6rem); }
+h2 { font-size: clamp(0.95rem, 2vw, 1.25rem); }
+
+main h2::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 4px;
+  margin-top: 0.7rem;
+  background: linear-gradient(
+    90deg,
+    var(--gs-naranja) 0 34%,
+    var(--gs-morado-neon) 34% 67%,
+    var(--gs-rojo-glitch) 67% 100%
+  );
+}
+
 p {
-  color: var(--glitch-texto-suave);
+  color: var(--gs-texto-suave);
 }
 
 a {
   text-decoration: none;
 }
 
+:focus-visible {
+  outline: 3px solid var(--gs-naranja-brillante);
+  outline-offset: 2px;
+}
+
 /* 2. COMPONENTES BOOTSTRAP CON LA PALETA */
+
 .card,
 .list-group-item {
-  --bs-card-bg: var(--glitch-superficie);
-  --bs-list-group-bg: var(--glitch-superficie);
-  --bs-card-border-color: var(--glitch-borde);
-  border-color: var(--glitch-borde);
+  --bs-card-bg: var(--gs-morado-oscuro);
+  --bs-list-group-bg: var(--gs-morado-oscuro);
+  --bs-card-border-color: var(--gs-borde);
+  --bs-list-group-border-color: var(--gs-borde);
+  border-color: var(--gs-borde);
+}
+
+.card {
+  border-width: 2px;
+  border-radius: 6px;
 }
 
 .form-control,
 .form-select,
 .input-group-text {
-  background-color: var(--glitch-superficie);
-  border-color: var(--glitch-borde);
-  color: var(--glitch-texto);
+  background-color: var(--gs-negro);
+  border-color: var(--gs-borde);
+  color: var(--gs-fantasma);
+}
+
+.form-control::placeholder {
+  color: var(--gs-texto-suave);
+  opacity: 0.8;
 }
 
 .form-control:focus,
 .form-select:focus {
-  background-color: var(--glitch-superficie);
-  border-color: var(--glitch-acento);
-  box-shadow: 0 0 0 0.2rem rgba(179, 0, 0, 0.3);
-  color: var(--glitch-texto);
+  background-color: var(--gs-negro);
+  border-color: var(--gs-lila);
+  box-shadow: 0 0 0 0.2rem rgba(184, 107, 255, 0.35);
+  color: var(--gs-fantasma);
 }
 
 .form-check-input:checked {
-  background-color: var(--glitch-acento);
-  border-color: var(--glitch-acento);
+  background-color: var(--gs-morado-neon);
+  border-color: var(--gs-morado-neon);
 }
 
 .table {
   --bs-table-bg: transparent;
-  --bs-table-hover-bg: rgba(179, 0, 0, 0.08);
+  --bs-table-border-color: rgba(160, 0, 255, 0.3);
+  --bs-table-hover-bg: rgba(160, 0, 255, 0.12);
 }
 
 .breadcrumb {
-  --bs-breadcrumb-divider-color: var(--glitch-texto-suave);
-  --bs-breadcrumb-item-active-color: var(--glitch-texto-suave);
+  --bs-breadcrumb-divider-color: var(--gs-texto-suave);
+  --bs-breadcrumb-item-active-color: var(--gs-texto-suave);
 }
 
-/* Botón principal de la marca */
+.btn {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
 .btn-glitch {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: var(--glitch-acento);
-  --bs-btn-border-color: var(--glitch-acento);
+  --bs-btn-color: var(--gs-negro);
+  --bs-btn-bg: var(--gs-naranja-brillante);
+  --bs-btn-border-color: var(--gs-naranja-brillante);
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: var(--glitch-acento-hover);
-  --bs-btn-hover-border-color: var(--glitch-acento-hover);
-  --bs-btn-active-bg: var(--glitch-acento-hover);
-  --bs-btn-active-border-color: var(--glitch-acento-hover);
-  --bs-btn-disabled-bg: var(--glitch-acento);
-  --bs-btn-disabled-border-color: var(--glitch-acento);
-  --bs-btn-focus-shadow-rgb: 179, 0, 0;
-  font-weight: 600;
+  --bs-btn-hover-bg: var(--gs-morado-neon);
+  --bs-btn-hover-border-color: var(--gs-morado-neon);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #8200cc;
+  --bs-btn-active-border-color: #8200cc;
+  --bs-btn-disabled-color: var(--gs-negro);
+  --bs-btn-disabled-bg: var(--gs-naranja-brillante);
+  --bs-btn-disabled-border-color: var(--gs-naranja-brillante);
+  --bs-btn-focus-shadow-rgb: 255, 157, 0;
+  font-family: "Chakra Petch", "Segoe UI", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-width: 2px;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 var(--gs-morado-neon);
+}
+
+.btn-glitch:hover,
+.btn-glitch:focus-visible {
+  box-shadow: 3px 3px 0 var(--gs-naranja), var(--gs-brillo-neon);
+}
+
+.btn-glitch:active,
+.btn-glitch:disabled {
+  box-shadow: none;
+}
+
+.btn-outline-light {
+  --bs-btn-color: var(--gs-fantasma);
+  --bs-btn-border-color: var(--gs-lila);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--gs-morado-neon);
+  --bs-btn-hover-border-color: var(--gs-morado-neon);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #8200cc;
+  --bs-btn-active-border-color: #8200cc;
+  --bs-btn-focus-shadow-rgb: 184, 107, 255;
+  border-width: 2px;
+  border-radius: 4px;
+}
+
+.btn-outline-secondary {
+  --bs-btn-color: var(--gs-texto-suave);
+  --bs-btn-border-color: var(--gs-morado-medio);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--gs-morado-medio);
+  --bs-btn-hover-border-color: var(--gs-lila);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--gs-morado-medio);
+  --bs-btn-active-border-color: var(--gs-lila);
+  --bs-btn-disabled-color: var(--gs-texto-suave);
+  --bs-btn-disabled-border-color: var(--gs-morado-medio);
+  --bs-btn-focus-shadow-rgb: 184, 107, 255;
+  border-width: 2px;
+  border-radius: 4px;
+}
+
+.btn-outline-danger {
+  --bs-btn-color: var(--gs-rojo-glitch);
+  --bs-btn-border-color: var(--gs-rojo-glitch);
+  --bs-btn-hover-color: var(--gs-negro);
+  --bs-btn-hover-bg: var(--gs-rojo-glitch);
+  --bs-btn-hover-border-color: var(--gs-rojo-glitch);
+  --bs-btn-active-color: var(--gs-negro);
+  --bs-btn-active-bg: var(--gs-rojo-glitch);
+  --bs-btn-active-border-color: var(--gs-rojo-glitch);
+  --bs-btn-focus-shadow-rgb: 255, 43, 0;
+  border-width: 2px;
+  border-radius: 4px;
+}
+
+.btn-secondary {
+  --bs-btn-color: var(--gs-fantasma);
+  --bs-btn-bg: var(--gs-morado-medio);
+  --bs-btn-border-color: var(--gs-morado-medio);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--gs-morado-neon);
+  --bs-btn-hover-border-color: var(--gs-morado-neon);
+  --bs-btn-active-bg: #8200cc;
+  --bs-btn-active-border-color: #8200cc;
+  --bs-btn-focus-shadow-rgb: 184, 107, 255;
+  border-radius: 4px;
+}
+
+.text-bg-danger {
+  background-color: var(--gs-rojo-glitch) !important;
+  color: var(--gs-negro) !important;
+  border-radius: 2px;
+  box-shadow: 2px 2px 0 var(--gs-naranja);
+  font-weight: 700;
+}
+
+.text-bg-secondary {
+  background-color: var(--gs-morado-medio) !important;
+  color: var(--gs-lila-claro) !important;
+  border-radius: 2px;
+}
+
+.text-bg-dark {
+  background-color: var(--gs-negro) !important;
+  color: var(--gs-fantasma) !important;
+}
+
+.link-danger {
+  color: var(--gs-lila) !important;
+}
+
+.link-danger:hover,
+.link-danger:focus-visible {
+  color: var(--gs-naranja-brillante) !important;
+}
+
+.link-light:hover,
+.link-light:focus-visible {
+  color: var(--gs-lila) !important;
 }
 
 /* 3. ENCABEZADO */
+
 .encabezado {
-  background: var(--glitch-superficie);
-  border-bottom: 1px solid var(--glitch-borde);
+  background: var(--gs-negro);
+  border-bottom: 2px solid var(--gs-morado-neon);
+  box-shadow: 0 4px 18px rgba(160, 0, 255, 0.3);
 }
 
 .marca__logo {
@@ -116,42 +327,95 @@ a {
   width: auto;
 }
 
-.navbar .nav-link {
-  color: var(--glitch-texto);
-  border-bottom: 2px solid transparent;
+.navbar-brand:hover .marca__logo,
+.navbar-brand:focus-visible .marca__logo {
+  animation: glitch-logo 0.35s steps(2, end) 1;
 }
 
-.navbar .nav-link:hover,
+.navbar .nav-link {
+  color: var(--gs-fantasma);
+  font-family: "Chakra Petch", "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+  color: var(--gs-lila);
+  border-bottom-color: rgba(184, 107, 255, 0.6);
+}
+
 .navbar .nav-link.active {
-  color: #fff;
-  border-bottom-color: var(--glitch-acento);
+  color: var(--gs-lila);
+  border-bottom-color: var(--gs-morado-neon);
+  box-shadow: 0 3px 10px -3px var(--gs-morado-neon);
 }
 
 .navbar-toggler {
-  border-color: var(--glitch-borde);
+  border-color: var(--gs-morado-neon);
 }
 
-/* 4. HERO */
+.navbar-collapse {
+  background: var(--gs-negro);
+}
+
+/* 4. HERO / PORTADA */
+
 .hero {
-  background: var(--glitch-superficie-alta);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--gs-negro);
+  background-image: url("/img/fondo-halloween.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-bottom: 2px solid var(--gs-morado-neon);
+}
+
+.hero > .container {
+  position: relative;
+  z-index: 1;
 }
 
 .hero__titulo {
-  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  color: var(--gs-fantasma);
+  line-height: 1.6;
   animation: glitch-entrada 0.6s steps(2, end) 1;
+}
+
+.hero .lead {
+  color: var(--gs-fantasma);
+  opacity: 0.92;
 }
 
 .hero__imagen {
   aspect-ratio: 4 / 3;
   object-fit: cover;
   width: 100%;
+  border: 3px solid var(--gs-naranja-brillante);
+  border-radius: 4px !important;
+  box-shadow: 6px 6px 0 var(--gs-morado-neon), 0 0 32px rgba(160, 0, 255, 0.35);
 }
 
 @keyframes glitch-entrada {
-  0% { text-shadow: 2px 0 var(--glitch-acento), -2px 0 #4a4a4a; transform: translateX(-2px); }
-  40% { text-shadow: -3px 0 var(--glitch-acento), 3px 0 #4a4a4a; transform: translateX(2px); }
-  70% { text-shadow: 1px 0 var(--glitch-acento), -1px 0 #4a4a4a; transform: translateX(-1px); }
-  100% { text-shadow: none; transform: translateX(0); }
+  0% { text-shadow: 2px 0 var(--gs-rojo-glitch), -2px 0 var(--gs-lila); transform: translateX(-2px); }
+  40% { text-shadow: -3px 0 var(--gs-rojo-glitch), 3px 0 var(--gs-lila); transform: translateX(2px); }
+  70% { text-shadow: 1px 0 var(--gs-rojo-glitch), -1px 0 var(--gs-lila); transform: translateX(-1px); }
+  100% { text-shadow: 0 0 14px rgba(160, 0, 255, 0.55); transform: translateX(0); }
+}
+
+@keyframes glitch-logo {
+  0% { transform: translateX(-2px); filter: drop-shadow(2px 0 var(--gs-rojo-glitch)); }
+  50% { transform: translateX(2px); filter: drop-shadow(-2px 0 var(--gs-lila)); }
+  100% { transform: translateX(0); filter: none; }
+}
+
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -159,19 +423,34 @@ a {
 }
 
 /* 5. TARJETAS DE PRODUCTO Y CATEGORÍA */
+
 .tarjeta-producto,
 .tarjeta-categoria {
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+  box-shadow: 4px 4px 0 rgba(160, 0, 255, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .tarjeta-producto:hover,
-.tarjeta-categoria:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 2px 16px rgba(179, 0, 0, 0.25);
+.tarjeta-categoria:hover,
+.tarjeta-categoria:focus-visible {
+  transform: translate(-2px, -3px);
+  border-color: var(--gs-lila);
+  box-shadow: 6px 6px 0 var(--gs-morado-neon), 0 0 22px rgba(160, 0, 255, 0.35);
+}
+
+.tarjeta-producto:has(.tarjeta-producto__imagen-link .badge) {
+  border-color: var(--gs-naranja);
+  box-shadow: 4px 4px 0 rgba(255, 43, 0, 0.55);
+}
+
+.tarjeta-producto:has(.tarjeta-producto__imagen-link .badge):hover {
+  border-color: var(--gs-naranja-brillante);
+  box-shadow: 6px 6px 0 var(--gs-rojo-glitch), 0 0 22px rgba(255, 101, 0, 0.4);
 }
 
 .tarjeta-producto__imagen-link {
-  background: var(--glitch-fondo);
+  background: var(--gs-negro);
   display: block;
 }
 
@@ -182,41 +461,42 @@ a {
 }
 
 .tarjeta-producto__categoria {
-  color: #ff5c5c;
+  color: var(--gs-lila);
   font-size: 0.78rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
 }
 
 .tarjeta-producto__nombre {
   font-family: "Chakra Petch", sans-serif;
   font-size: 1.05rem;
   font-weight: 600;
-  color: #f2ecec;
+  color: var(--gs-fantasma);
 }
 
 .tarjeta-producto__nombre:hover {
+  color: var(--gs-lila);
   text-decoration: underline;
 }
 
 .tarjeta-categoria__imagen {
   aspect-ratio: 16 / 9;
   object-fit: cover;
+  border-bottom: 2px solid var(--gs-morado-neon);
 }
 
 .tarjeta-categoria h3 {
-  color: #f2ecec;
+  color: var(--gs-naranja-brillante);
 }
 
-/* Precios */
 .precio__actual {
-  color: var(--glitch-brillo);
+  color: var(--gs-naranja-brillante);
   font-weight: 700;
 }
 
 .precio__anterior {
-  color: var(--glitch-texto-suave);
+  color: var(--gs-texto-suave);
   font-size: 0.85em;
 }
 
@@ -225,9 +505,11 @@ a {
 }
 
 /* 6. DETALLE, CARRITO Y BLOGS */
+
 .detalle-producto__galeria {
-  background: var(--glitch-superficie);
-  border: 1px solid var(--glitch-borde);
+  background: var(--gs-negro);
+  border: 2px solid var(--gs-borde);
+  box-shadow: 4px 4px 0 rgba(160, 0, 255, 0.35);
 }
 
 .detalle-producto__galeria img {
@@ -239,14 +521,14 @@ a {
 }
 
 .linea-carrito__imagen {
-  background: var(--glitch-superficie);
+  background: var(--gs-negro);
   aspect-ratio: 1;
   object-fit: contain;
   padding: 4px;
 }
 
 .linea-carrito__nombre {
-  color: #f2ecec;
+  color: var(--gs-fantasma);
 }
 
 @media (min-width: 992px) {
@@ -257,12 +539,20 @@ a {
 }
 
 .ofertas-banner {
-  background: linear-gradient(120deg, var(--glitch-acento-hover), var(--glitch-superficie-alta) 70%);
-  border: 1px solid var(--glitch-borde);
+  position: relative;
+  background: linear-gradient(135deg, var(--gs-morado-oscuro) 0%, #2b0f1f 100%);
+  border: 2px solid var(--gs-naranja);
+  border-radius: 6px !important;
+  box-shadow: 6px 6px 0 var(--gs-rojo-glitch);
+}
+
+.ofertas-banner h1 {
+  color: var(--gs-naranja-brillante);
+  text-shadow: 0 0 14px rgba(255, 101, 0, 0.55);
 }
 
 .ofertas-banner p {
-  color: var(--glitch-texto);
+  color: var(--gs-fantasma);
 }
 
 .tarjeta-blog__imagen {
@@ -274,7 +564,7 @@ a {
 }
 
 .articulo-blog p {
-  color: var(--glitch-texto);
+  color: var(--gs-fantasma);
 }
 
 .formulario__logo {
@@ -287,30 +577,48 @@ a {
 }
 
 /* 7. PIE DE PÁGINA */
+
 .pie {
-  background: var(--glitch-superficie-alta);
+  position: relative;
+  overflow: hidden;
+  background: var(--gs-negro);
+  border-top: 2px solid var(--gs-morado-neon);
+  box-shadow: 0 -4px 18px rgba(160, 0, 255, 0.25);
   padding: 48px 0 24px;
 }
 
+.pie h4 {
+  color: var(--gs-naranja-brillante);
+}
+
+.pie h4::before {
+  content: "■";
+  content: "■" / "";
+  color: var(--gs-morado-neon);
+  font-size: 0.7em;
+  margin-right: 0.5rem;
+}
+
 .pie a {
-  color: #d8c9c9;
+  color: var(--gs-fantasma);
 }
 
 .pie a:hover {
-  color: #fff;
+  color: var(--gs-lila);
   text-decoration: underline;
 }
 
 .pie__inferior {
-  border-top: 1px solid var(--glitch-acento);
+  border-top: 2px solid var(--gs-morado-neon);
   padding-top: 20px;
-  color: #d8c9c9;
+  color: var(--gs-texto-suave);
 }
 
 /* 8. PANEL ADMINISTRATIVO */
+
 .admin-sidebar {
-  background: var(--glitch-superficie-alta);
-  border-right: 1px solid var(--glitch-borde);
+  background: var(--gs-negro);
+  border-right: 2px solid var(--gs-borde);
 }
 
 @media (min-width: 768px) {
@@ -321,19 +629,19 @@ a {
 }
 
 .admin-sidebar__enlace {
-  color: #d8c9c9;
+  color: var(--gs-fantasma);
   border-left: 3px solid transparent;
   padding: 10px 20px;
 }
 
 .admin-sidebar__enlace:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  background: rgba(160, 0, 255, 0.12);
+  color: var(--gs-lila);
 }
 
 .admin-sidebar__enlace.active {
-  background: rgba(255, 255, 255, 0.08);
-  border-left-color: var(--glitch-acento);
+  background: rgba(160, 0, 255, 0.2);
+  border-left-color: var(--gs-naranja-brillante);
   color: #fff;
   font-weight: 600;
 }
@@ -341,7 +649,7 @@ a {
 .tarjeta-estadistica__valor {
   font-family: "Chakra Petch", sans-serif;
   font-size: 1.7rem;
-  color: #f2ecec;
+  color: var(--gs-naranja-brillante);
 }
 
 .vista-previa-imagen {
@@ -350,6 +658,7 @@ a {
 }
 
 /* Al imprimir la boleta se ocultan navegación y botones */
+
 @media print {
   .encabezado, .pie, .admin-sidebar, .btn { display: none !important; }
   body, .card { background: #fff !important; color: #000 !important; }
