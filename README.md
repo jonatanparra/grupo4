@@ -17,9 +17,12 @@ administrativo completo) y **pruebas unitarias con Jasmine + Karma**.
 ## Cómo ejecutarlo
 
 ```bash
+git clone https://github.com/jonatanparra/grupo4.git
+cd grupo4
 npm install
 npm run dev        # servidor de desarrollo en http://localhost:5173
 npm run build      # build de producción en dist/
+npm run preview    # sirve localmente el build de dist/
 npm test           # pruebas unitarias Jasmine + Karma (una ejecución) + reporte de cobertura
 npm run test:watch # pruebas en modo observador (re-ejecuta al guardar)
 ```
@@ -56,10 +59,16 @@ Application → Local Storage).
 ## Estructura del proyecto
 
 ```
-glitch_store/
+grupo4/
 ├── index.html                 Punto de entrada de Vite
+├── package.json               Dependencias y scripts (dev, build, preview, test)
+├── vite.config.js             Configuración de Vite (plugin React, puerto 5173)
 ├── karma.conf.cjs             Configuración de Karma + Jasmine + cobertura
-├── public/                    Imágenes y videos (se sirven tal cual)
+├── docs/
+│   └── COBERTURA_TESTING.md   Documento de cobertura del testing
+├── public/                    Se sirve tal cual
+│   ├── img/                   Imágenes de productos, categorías, blogs y logos
+│   └── video/                 Videos de los blogs
 └── src/
     ├── main.jsx               Monta <App /> con BrowserRouter y TiendaProvider
     ├── App.jsx                Mapa de rutas (tienda + panel admin)
@@ -82,7 +91,9 @@ glitch_store/
     ├── pages/                 Una vista por ruta (tienda)
     │   └── admin/             Vistas del panel administrativo
     ├── styles/tema.css        Personalización de Bootstrap (paleta horror/glitch)
-    └── test/                  Configuración y utilidades de prueba (mocks)
+    └── test/
+        ├── setup.js           beforeEach global: limpia localStorage antes de cada prueba
+        └── utilidades.jsx     Mocks (localStorage falso, servicios de prueba) y renderConTienda()
 ```
 
 Cada archivo `*.spec.js(x)` está junto al código que prueba.

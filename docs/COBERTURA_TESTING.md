@@ -7,13 +7,13 @@
 
 | Indicador            | Valor                |
 |----------------------|----------------------|
-| Pruebas ejecutadas   | **167**              |
-| Pruebas exitosas     | **167 (100%)**       |
-| Archivos de prueba   | 16 (`*.spec.js` / `*.spec.jsx`) |
-| Cobertura de sentencias | **96,18%**        |
-| Cobertura de ramas   | **91,02%**           |
-| Cobertura de funciones | **96,98%**         |
-| Cobertura de líneas  | **97,72%**           |
+| Pruebas ejecutadas   | **169**              |
+| Pruebas exitosas     | **169 (100%)**       |
+| Archivos de prueba   | 17 (`*.spec.js` / `*.spec.jsx`) |
+| Cobertura de sentencias | **96,35%** (793/823) |
+| Cobertura de ramas   | **90,97%** (514/565) |
+| Cobertura de funciones | **97,04%** (296/305) |
+| Cobertura de líneas  | **97,84%** (680/695) |
 
 Los números se regeneran con `npm test` (reporte HTML en `coverage/html/index.html`, tabla de texto
 en `coverage/cobertura.txt`). `src/main.jsx` no se mide porque solo monta la aplicación en el DOM real.
@@ -52,6 +52,8 @@ en `coverage/cobertura.txt`). `src/main.jsx` no se mide porque solo monta la apl
 | `spyOn(almacenamiento, "setItem").and.callThrough()` | db | Verificar que la colección se persiste |
 | `spyOn(console, "error")` | db | Silenciar y verificar el log ante datos corruptos |
 | `jasmine.clock().install()` / `tick()` | TarjetaProducto | Controlar el `setTimeout` del texto "Añadido ✓" sin esperar tiempo real |
+| `jasmine.clock().mockDate()` + `spyOn(Date, "now")` | confetiHalloween | Avanzar los temporizadores del confeti y comprobar que la lluvia de emojis se detiene |
+| `spyOn(window, "AudioContext").and.throwError()` | confetiHalloween | Simular un navegador que bloquea el sonido |
 
 ## 4. Alcance por tipo de prueba (propuesta del docente)
 
@@ -117,6 +119,7 @@ en `coverage/cobertura.txt`). `src/main.jsx` no se mide porque solo monta la apl
 | Filtros y orden del catálogo, formato CLP, oferta, stock crítico | `utils/filtros.spec.js` |
 | CRUD de la base de datos simulada, errores por id duplicado/inexistente, datos corruptos | `data/db.spec.js` |
 | `procesarCompra`: pagada (descuenta stock, vacía carrito), rechazada, sin stock | `context/TiendaContext.spec.jsx` |
+| Confeti de Halloween (bonus): explosiones, fin de la lluvia a los 1,8 s y sonido bloqueado sin errores | `utils/confettiHalloween.spec.js` |
 
 ## 5. Análisis de resultados
 
@@ -131,6 +134,9 @@ en `coverage/cobertura.txt`). `src/main.jsx` no se mide porque solo monta la apl
      ahora el envío solo se suma cuando se elige despacho a domicilio.
   3. Los mensajes de RUN/código duplicado mostraban texto técnico ("registro con run…");
      ahora se muestra un mensaje claro al usuario.
+  4. La cobertura variaba entre ejecuciones (95,5% / 96,1%) porque el confeti usaba temporizadores
+     reales que a veces alcanzaban a ejecutarse durante otras pruebas. Se agregó
+     `confettiHalloween.spec.js` con reloj falso y ahora el resultado es **idéntico en cada ejecución**.
 - **Zonas con menor cobertura** (oportunidades de mejora):
   - `FormularioProducto.jsx` (~75%): la lectura de la imagen con `FileReader` y el error de
     archivo que no es imagen no se prueban con un archivo real.
