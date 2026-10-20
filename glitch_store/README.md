@@ -51,6 +51,7 @@ Application → Local Storage).
 | React Testing Library           | Renderizar componentes y simular eventos dentro de Jasmine |
 | karma-webpack + Babel           | Compilar JSX para las pruebas                              |
 | karma-coverage (istanbul)       | Reporte de cobertura                                       |
+| canvas-confetti                 | Bonus: confeti de Halloween al confirmar una compra        |
 
 ## Estructura del proyecto
 
@@ -71,7 +72,7 @@ glitch_store/
     │   └── TiendaContext.jsx  Estado global: conecta la persistencia con los componentes
     ├── hooks/
     │   └── useFormulario.js   Estado + validación en vivo de formularios
-    ├── utils/                 Lógica pura (validaciones, carrito, filtros, formato)
+    ├── utils/                 Lógica pura (validaciones, carrito, filtros, formato) y confettiHalloween.js (bonus)
     ├── components/
     │   ├── common/            Boton, CampoFormulario, Alerta, Precio, SelectorCantidad, RutaProtegida...
     │   ├── productos/         TarjetaProducto, GrillaProductos, FiltroCategorias, BarraBusqueda...
@@ -100,7 +101,7 @@ Cada archivo `*.spec.js(x)` está junto al código que prueba.
 | `/ofertas`               | **Nueva**: productos con descuento                          |
 | `/carrito`               | Carrito con cupón de descuento                              |
 | `/checkout`              | **Nueva**: datos del cliente, dirección y tipo de entrega (se completan solos si hay sesión) |
-| `/compra/exito/:id`      | **Nueva**: compra exitosa con boleta (imprimir / enviar)    |
+| `/compra/exito/:id`      | **Nueva**: compra exitosa con boleta (imprimir / enviar) y confeti de Halloween 🎃 |
 | `/compra/error/:id`      | **Nueva**: pago rechazado, con opción de reintentar         |
 | `/login`, `/registro`    | Formularios con validación                                  |
 | `/nosotros`, `/blogs`, `/blogs/:id`, `/contacto` | Contenido                           |
@@ -137,6 +138,16 @@ gestionar usuarios.
 - **Interactividad**: búsqueda por texto, filtros, orden, cupones, selects dependientes
   región → comuna, validación en vivo, simulación de pago rechazado, confirmación al eliminar.
 - **Pruebas**: ver [`docs/COBERTURA_TESTING.md`](docs/COBERTURA_TESTING.md).
+
+## Bonus: confeti y sonido de Halloween
+
+Al completar una compra con éxito (`/compra/exito/:id`) se lanza una animación de confeti con
+emojis de Halloween (🎃 👻 🦇) y un sonido corto generado con la Web Audio API.
+
+- Librería: [`canvas-confetti`](https://www.npmjs.com/package/canvas-confetti).
+- Lógica en `src/utils/confettiHalloween.js`; se dispara desde `CompraResultado.jsx` con un
+  `useEffect` que se ejecuta una sola vez cuando la compra es exitosa.
+- No se muestra en el pago rechazado (`/compra/error/:id`).
 
 ## Validaciones
 

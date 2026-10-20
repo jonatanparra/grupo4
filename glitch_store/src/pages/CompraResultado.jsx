@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react"; // agregué useEffect
 import { Link, useParams } from "react-router-dom";
 import { useTienda } from "../context/TiendaContext";
 import ResumenOrden from "../components/carrito/ResumenOrden";
 import EstadoVacio from "../components/common/EstadoVacio";
 import Boton from "../components/common/Boton";
+import { confetiHalloween } from "../utils/confettiHalloween"; // nuevo import
 
 /**
  * Resultado de una compra. Se usa en dos rutas:
@@ -15,6 +16,11 @@ export default function CompraResultado({ exito }) {
   const { ordenes } = useTienda();
   const [boletaEnviada, setBoletaEnviada] = useState(false);
   const orden = ordenes.find((o) => o.id === id);
+
+  // nuevo: disparo el confeti una sola vez cuando la compra fue exitosa
+  useEffect(() => {
+    if (exito && orden) confetiHalloween();
+  }, [exito, orden?.id]);
 
   if (!orden) {
     return (
