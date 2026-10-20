@@ -25,41 +25,42 @@ const sonidoHalloween = () => {
   }
 };
 
-// lanzo emojis de halloween como confeti
+// lanzo emojis de halloween como confeti (versión intermedia)
 export const confetiHalloween = () => {
   sonidoHalloween();
 
-  const calabaza = confetti.shapeFromText({ text: '🎃', scalar: 2 });
-  const fantasma = confetti.shapeFromText({ text: '👻', scalar: 2 });
-  const murcielago = confetti.shapeFromText({ text: '🦇', scalar: 2 });
+  // el scalar de las figuras y de la config deben ser iguales
+  const calabaza = confetti.shapeFromText({ text: '🎃', scalar: 1.5 });
+  const fantasma = confetti.shapeFromText({ text: '👻', scalar: 1.5 });
+  const murcielago = confetti.shapeFromText({ text: '🦇', scalar: 1.5 });
 
   const config = {
     shapes: [calabaza, fantasma, murcielago],
-    scalar: 2,
+    scalar: 1.5,
     colors: ['#ff6600', '#6a0dad', '#000000'],
     spread: 360,
     startVelocity: 30,
-    ticks: 150,
+    ticks: 120,
     zIndex: 9999,
   };
 
-  // explosión grande en el centro
-  confetti({ ...config, particleCount: 100, origin: { x: 0.5, y: 0.5 } });
+  // explosión en el centro
+  confetti({ ...config, particleCount: 75, origin: { x: 0.5, y: 0.5 } });
 
   // dos explosiones más a los lados
   setTimeout(() => {
-    confetti({ ...config, particleCount: 80, origin: { x: 0.3, y: 0.4 } });
-    confetti({ ...config, particleCount: 80, origin: { x: 0.7, y: 0.4 } });
+    confetti({ ...config, particleCount: 50, origin: { x: 0.3, y: 0.4 } });
+    confetti({ ...config, particleCount: 50, origin: { x: 0.7, y: 0.4 } });
   }, 300);
 
-  // lluvia desde las esquinas durante 2 segundos
-  const fin = Date.now() + 2000;
+  // lluvia desde las esquinas durante 1.8 segundos
+  const fin = Date.now() + 1800;
   const lluvia = setInterval(() => {
     if (Date.now() > fin) {
       clearInterval(lluvia);
       return;
     }
-    confetti({ ...config, particleCount: 6, angle: 60, spread: 70, origin: { x: 0, y: 0.7 } });
-    confetti({ ...config, particleCount: 6, angle: 120, spread: 70, origin: { x: 1, y: 0.7 } });
-  }, 150);
+    confetti({ ...config, particleCount: 4, angle: 60, spread: 70, origin: { x: 0, y: 0.7 } });
+    confetti({ ...config, particleCount: 4, angle: 120, spread: 70, origin: { x: 1, y: 0.7 } });
+  }, 200);
 };
