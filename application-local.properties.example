@@ -1,0 +1,13 @@
+# Copiar este archivo como "application-local.properties" (está en .gitignore)
+# y completar con los datos reales. También se pueden usar variables de entorno
+# con el mismo nombre en mayúsculas (DB_WALLET, DB_PASSWORD, JWT_SECRET).
+
+# Carpeta del Wallet descomprimido (usar / en Windows)
+DB_WALLET=C:/ruta/al/Wallet_DATABASE2026
+DB_SERVICE=database2026_high
+DB_USER=GLITCH_STORE
+DB_PASSWORD=cambiar
+
+# Secreto JWT en Base64 (32 bytes o más). Generar con:
+#   powershell -c "[Convert]::ToBase64String((1..48 | % {Get-Random -Max 256}))"
+JWT_SECRET=cambiar
