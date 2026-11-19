@@ -10,7 +10,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -51,6 +54,21 @@ public class ManejadorErrores {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorDTO> jsonInvalido(HttpMessageNotReadableException e, HttpServletRequest req) {
         return respuesta(HttpStatus.BAD_REQUEST, "El cuerpo de la solicitud no es un JSON válido.", null, req);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorDTO> metodoNoPermitido(HttpRequestMethodNotSupportedException e, HttpServletRequest req) {
+        return respuesta(HttpStatus.METHOD_NOT_ALLOWED, "El método " + e.getMethod() + " no está permitido en esta ruta.", null, req);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorDTO> rutaInexistente(NoResourceFoundException e, HttpServletRequest req) {
+        return respuesta(HttpStatus.NOT_FOUND, "La ruta no existe.", null, req);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorDTO> parametroInvalido(MethodArgumentTypeMismatchException e, HttpServletRequest req) {
+        return respuesta(HttpStatus.BAD_REQUEST, "El parámetro \"" + e.getName() + "\" no tiene un valor válido.", null, req);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

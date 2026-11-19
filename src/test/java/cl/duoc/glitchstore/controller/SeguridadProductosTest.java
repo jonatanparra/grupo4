@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -124,6 +125,14 @@ class SeguridadProductosTest {
                         .contentType(MediaType.APPLICATION_JSON).content(NUEVO))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.codigo").value("GS-100"));
+    }
+
+    @Test
+    void unMetodoNoSoportadoResponde405() throws Exception {
+        mvc.perform(put("/api/v1/productos").header("Authorization", token(Rol.ADMINISTRADOR))
+                        .contentType(MediaType.APPLICATION_JSON).content(NUEVO))
+                .andExpect(status().isMethodNotAllowed())
+                .andExpect(jsonPath("$.mensaje").value("El método PUT no está permitido en esta ruta."));
     }
 
     @Test

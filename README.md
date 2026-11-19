@@ -13,7 +13,7 @@ DSY1104 — Desarrollo Fullstack II, Duoc UC. El frontend React (EV2) consume es
 | Spring Security + JWT (jjwt 0.12) | Autenticación por tokens y autorización por roles |
 | springdoc-openapi 2.6 | Documentación Swagger |
 | Bean Validation | Validación de datos de entrada (incluye RUN y dominios de correo) |
-| JUnit 5 + Mockito + MockMvc | Pruebas de lógica de negocio y seguridad |
+| JUnit 5 + Mockito + MockMvc | Pruebas de lógica de negocio y seguridad (28) |
 
 ## Configuración
 
@@ -47,7 +47,7 @@ carga los datos de ejemplo de la EV2 (`database/datos-iniciales.json`): 5 catego
 3 usuarios y 2 boletas. Después Hibernate solo **valida** que las entidades coincidan con las tablas.
 
 ```bash
-mvnw.cmd test   # 27 pruebas, no necesitan la base de datos
+mvnw.cmd test   # 28 pruebas, no necesitan la base de datos
 ```
 
 ### Usuarios de prueba
