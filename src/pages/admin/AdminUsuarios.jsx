@@ -12,13 +12,16 @@ import { nombreComuna, nombreRegion } from "../../utils/formato";
 export function AdminUsuarios() {
   const { usuarios, eliminarUsuario, usuarioActual } = useTienda();
   const [tipo, setTipo] = useState("Todos");
-  const [aviso, setAviso] = useState("");
+  const [aviso, setAviso] = useState(null);
   const filtrados = usuarios.filter((u) => tipo === "Todos" || u.tipo === tipo);
 
-  function eliminar(usuario) {
-    if (window.confirm(`¿Eliminar al usuario ${usuario.nombre} ${usuario.apellidos}?`)) {
-      eliminarUsuario(usuario.run);
-      setAviso(`Usuario ${usuario.nombre} eliminado.`);
+  async function eliminar(usuario) {
+    if (!window.confirm(`¿Eliminar al usuario ${usuario.nombre} ${usuario.apellidos}?`)) return;
+    try {
+      await eliminarUsuario(usuario.run);
+      setAviso({ tipo: "warning", texto: `Usuario ${usuario.nombre} eliminado.` });
+    } catch (error) {
+      setAviso({ tipo: "danger", texto: error.message });
     }
   }
 
@@ -33,7 +36,7 @@ export function AdminUsuarios() {
         </select>
         <Link to="/admin/usuarios/nuevo" className="btn btn-glitch">+ Nuevo usuario</Link>
       </EncabezadoAdmin>
-      <Alerta mensaje={aviso} tipo="warning" onCerrar={() => setAviso("")} />
+      <Alerta mensaje={aviso?.texto} tipo={aviso?.tipo} onCerrar={() => setAviso(null)} />
       <div className="card card-body">
         <TablaUsuarios usuarios={filtrados} onEliminar={eliminar} runActual={usuarioActual?.run} />
       </div>
@@ -76,7 +79,7 @@ export function AdminUsuarioMostrar() {
   const usuario = usuarios.find((u) => u.run === run);
   if (!usuario) return <EstadoVacio titulo="Usuario no encontrado" enlace="/admin/usuarios" textoEnlace="Volver al listado" />;
 
-  const compras = ordenes.filter((o) => o.cliente.correo.toLowerCase() === usuario.correo.toLowerCase());
+  const compras = ordenes.filter((o) => o.usuarioRun === usuario.run || o.cliente.correo.toLowerCase() === usuario.correo.toLowerCase());
   const campos = [
     ["RUN", usuario.run],
     ["Correo", usuario.correo],
@@ -84,7 +87,7 @@ export function AdminUsuarioMostrar() {
     ["Fecha de nacimiento", usuario.fechaNacimiento || "—"],
     ["Región", nombreRegion(usuario.region)],
     ["Comuna", nombreComuna(usuario.region, usuario.comuna)],
-    ["Dirección", usuario.direccion],
+    ["Dirección", usuario.direccion || "—"],
   ];
 
   return (

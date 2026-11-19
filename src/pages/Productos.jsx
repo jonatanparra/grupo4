@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { useTienda } from "../context/TiendaContext";
-import { CATEGORIAS } from "../data/datos";
 import BarraBusqueda from "../components/productos/BarraBusqueda";
 import FiltroCategorias from "../components/productos/FiltroCategorias";
 import GrillaProductos from "../components/productos/GrillaProductos";
@@ -8,7 +7,7 @@ import { filtrarProductos } from "../utils/filtros";
 
 /** Catálogo completo con búsqueda, filtro por categoría, solo ofertas y orden. */
 export default function Productos() {
-  const { productos, agregarAlCarrito } = useTienda();
+  const { productos, categorias, agregarAlCarrito } = useTienda();
   const [texto, setTexto] = useState("");
   const [categoria, setCategoria] = useState("Todas");
   const [soloOfertas, setSoloOfertas] = useState(false);
@@ -47,7 +46,7 @@ export default function Productos() {
       </div>
 
       <div className="mb-4">
-        <FiltroCategorias categorias={CATEGORIAS.map((c) => c.nombre)} activa={categoria} onSeleccionar={setCategoria} />
+        <FiltroCategorias categorias={categorias.map((c) => c.nombre)} activa={categoria} onSeleccionar={setCategoria} />
       </div>
 
       <p className="small text-body-secondary" aria-live="polite">

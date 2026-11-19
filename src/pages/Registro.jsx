@@ -33,21 +33,26 @@ export const validarRegistro = (v) => ({
 });
 
 export default function Registro() {
-  const { crearUsuario } = useTienda();
+  const { registrar } = useTienda();
   const [resultado, setResultado] = useState(null);
+  const [enviando, setEnviando] = useState(false);
   const { valores, errores, cambiar, validarTodo, reiniciar } = useFormulario(VACIO, validarRegistro);
 
-  function enviar(evento) {
+  /** Crea la cuenta (siempre como Cliente) en el backend y deja la sesión iniciada. */
+  async function enviar(evento) {
     evento.preventDefault();
     setResultado(null);
     if (!validarTodo()) return;
+    setEnviando(true);
     try {
-      const { confirmar, ...datos } = valores;
-      crearUsuario({ ...datos, run: datos.run.trim().toUpperCase(), tipo: "Cliente", fechaNacimiento: "" });
-      setResultado({ tipo: "success", texto: "Cuenta creada correctamente. Ya puedes iniciar sesión." });
+      const { confirmar, telefono, ...datos } = valores;
+      const usuario = await registrar({ ...datos, run: datos.run.trim().toUpperCase(), fechaNacimiento: null });
+      setResultado({ tipo: "success", texto: `Cuenta creada correctamente. ¡Bienvenido/a, ${usuario.nombre}! Ya iniciaste sesión.` });
       reiniciar();
     } catch (error) {
       setResultado({ tipo: "danger", texto: error.message });
+    } finally {
+      setEnviando(false);
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -61,7 +66,7 @@ export default function Registro() {
             <Alerta tipo={resultado?.tipo} mensaje={resultado?.texto} onCerrar={() => setResultado(null)} />
             {resultado?.tipo === "success" && (
               <p>
-                <Link to="/login" className="btn btn-glitch btn-sm">Ir a iniciar sesión</Link>
+                <Link to="/productos" className="btn btn-glitch btn-sm">Ir a la tienda</Link>
               </p>
             )}
 
@@ -87,7 +92,7 @@ export default function Registro() {
             <CamposRegionComuna region={valores.region} comuna={valores.comuna} onChange={cambiar} errores={errores} />
             <CampoFormulario name="direccion" etiqueta="Dirección" valor={valores.direccion} onChange={cambiar} error={errores.direccion} maxLength={300} />
 
-            <Boton tipo="submit" etiqueta="Registrar" ancho />
+            <Boton tipo="submit" etiqueta={enviando ? "Registrando..." : "Registrar"} disabled={enviando} ancho />
             <p className="text-center mt-3 mb-0 small">
               ¿Ya tienes cuenta? <Link to="/login" className="link-danger fw-semibold">Inicia sesión</Link>
             </p>

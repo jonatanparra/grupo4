@@ -65,6 +65,9 @@ export default function Encabezado() {
               {usuarioActual ? (
                 <>
                   <span className="text-body-secondary">Hola, {usuarioActual.nombre}</span>
+                  <Link to="/mis-compras" className="link-light" onClick={cerrarMenu}>
+                    Mis compras
+                  </Link>
                   {esStaff && (
                     <Link to="/admin" className="link-danger" onClick={cerrarMenu}>
                       Panel admin

@@ -3,7 +3,7 @@ import { MemoryRouter } from "react-router-dom";
 import ResumenCarrito from "./ResumenCarrito";
 import LineaCarrito from "./LineaCarrito";
 import ResumenOrden from "./ResumenOrden";
-import { ORDENES, PRODUCTOS } from "../../data/datos";
+import { ORDENES, PRODUCTOS } from "../../test/datosPrueba";
 
 const TOTALES = { subtotal: 20000, descuentoCupon: 2000, costoEnvio: 0, total: 18000 };
 

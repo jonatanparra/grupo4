@@ -1,8 +1,16 @@
 import { Link } from "react-router-dom";
 import { formatoCLP, formatoFecha } from "../../utils/formato";
 
+const COLORES_ESTADO = {
+  Pagado: "text-bg-success",
+  Enviado: "text-bg-info",
+  Entregado: "text-bg-primary",
+  Rechazado: "text-bg-danger",
+  Anulado: "text-bg-secondary",
+};
+
 export function InsigniaEstado({ estado }) {
-  return <span className={`badge ${estado === "Pagado" ? "text-bg-success" : "text-bg-danger"}`}>{estado}</span>;
+  return <span className={`badge ${COLORES_ESTADO[estado] || "text-bg-secondary"}`}>{estado}</span>;
 }
 
 /** Listado de órdenes (boletas) con su estado y enlace al detalle. */

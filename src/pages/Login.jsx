@@ -17,20 +17,24 @@ export default function Login() {
   const navegar = useNavigate();
   const ubicacion = useLocation();
   const [errorLogin, setErrorLogin] = useState("");
+  const [enviando, setEnviando] = useState(false);
   const { valores, errores, cambiar, validarTodo } = useFormulario({ correo: "", contrasena: "" }, validarLogin);
 
-  function enviar(evento) {
+  async function enviar(evento) {
     evento.preventDefault();
     setErrorLogin("");
     if (!validarTodo()) return;
 
-    const usuario = iniciarSesion(valores.correo, valores.contrasena);
-    if (!usuario) {
-      setErrorLogin("Correo o contraseña incorrectos.");
-      return;
+    setEnviando(true);
+    try {
+      const usuario = await iniciarSesion(valores.correo, valores.contrasena);
+      const esStaff = ["Administrador", "Vendedor"].includes(usuario.tipo);
+      navegar(ubicacion.state?.desde || (esStaff ? "/admin" : "/"), { replace: true });
+    } catch (error) {
+      // 401 del backend: "Correo o contraseña incorrectos."; sin conexión: aviso del cliente HTTP
+      setErrorLogin(error.message);
+      setEnviando(false);
     }
-    const esStaff = ["Administrador", "Vendedor"].includes(usuario.tipo);
-    navegar(ubicacion.state?.desde || (esStaff ? "/admin" : "/"), { replace: true });
   }
 
   return (
@@ -56,7 +60,7 @@ export default function Login() {
               autoComplete="current-password"
             />
 
-            <Boton tipo="submit" etiqueta="Iniciar sesión" ancho />
+            <Boton tipo="submit" etiqueta={enviando ? "Ingresando..." : "Iniciar sesión"} disabled={enviando} ancho />
             <p className="text-center mt-3 mb-0 small">
               ¿No tienes cuenta? <Link to="/registro" className="link-danger fw-semibold">Regístrate</Link>
             </p>

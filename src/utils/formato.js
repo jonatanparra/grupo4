@@ -1,4 +1,4 @@
-import { CATEGORIAS, REGIONES } from "../data/datos";
+import { REGIONES } from "../data/datos";
 
 /** Formatea un número como pesos chilenos: 13990 → "$13.990". */
 export function formatoCLP(valor) {
@@ -21,14 +21,6 @@ export function esStockCritico(producto) {
   return producto.stockCritico !== null && producto.stockCritico !== undefined && producto.stock <= producto.stockCritico;
 }
 
-export function categoriaPorId(id) {
-  return CATEGORIAS.find((c) => c.id === id) || null;
-}
-
-export function categoriaPorNombre(nombre) {
-  return CATEGORIAS.find((c) => c.nombre === nombre) || null;
-}
-
 export function nombreRegion(regionId) {
   return REGIONES.find((r) => r.id === regionId)?.nombre || regionId || "—";
 }
@@ -40,4 +32,11 @@ export function nombreComuna(regionId, comunaId) {
 
 export function formatoFecha(iso) {
   return new Date(iso).toLocaleString("es-CL", { dateStyle: "medium", timeStyle: "short" });
+}
+
+/** Estados de boleta que corresponden a una venta concretada (se cobró y no se anuló). */
+export const ESTADOS_VENTA = ["Pagado", "Enviado", "Entregado"];
+
+export function esVentaConcretada(orden) {
+  return ESTADOS_VENTA.includes(orden.estado);
 }

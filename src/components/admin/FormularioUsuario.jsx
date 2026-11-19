@@ -23,26 +23,38 @@ export const validarUsuario = (v, esEdicion = false) => ({
 
 const VACIO = { run: "", nombre: "", apellidos: "", correo: "", contrasena: "", fechaNacimiento: "", tipo: "", region: "", comuna: "", direccion: "" };
 
+/** La API devuelve null en los campos vacíos; los inputs necesitan textos. */
+const sinNulos = (usuario) => Object.fromEntries(Object.entries(usuario).map(([clave, valor]) => [clave, valor ?? ""]));
+
 export default function FormularioUsuario({ usuario, onGuardar, textoBoton = "Guardar usuario" }) {
   const esEdicion = Boolean(usuario);
-  const inicial = esEdicion ? { ...VACIO, ...usuario, contrasena: "" } : VACIO;
+  const inicial = esEdicion ? { ...VACIO, ...sinNulos(usuario), contrasena: "" } : VACIO;
   const { valores, errores, cambiar, validarTodo, reiniciar } = useFormulario(inicial, (v) => validarUsuario(v, esEdicion));
   const [resultado, setResultado] = useState(null);
+  const [guardando, setGuardando] = useState(false);
 
-  function enviar(evento) {
+  async function enviar(evento) {
     evento.preventDefault();
     if (!validarTodo()) {
       setResultado({ tipo: "danger", texto: "Revisa los campos marcados en rojo." });
       return;
     }
     const { contrasena, ...datos } = valores;
-    const usuarioFinal = { ...datos, run: datos.run.trim().toUpperCase(), ...(contrasena ? { contrasena } : {}) };
+    const usuarioFinal = {
+      ...datos,
+      run: datos.run.trim().toUpperCase(),
+      fechaNacimiento: datos.fechaNacimiento || null,
+      ...(contrasena ? { contrasena } : {}),
+    };
+    setGuardando(true);
     try {
-      onGuardar(usuarioFinal);
+      await onGuardar(usuarioFinal);
       setResultado({ tipo: "success", texto: esEdicion ? "Usuario actualizado correctamente." : "Usuario creado correctamente." });
       if (!esEdicion) reiniciar();
     } catch (error) {
       setResultado({ tipo: "danger", texto: error.message });
+    } finally {
+      setGuardando(false);
     }
   }
 
@@ -102,7 +114,7 @@ export default function FormularioUsuario({ usuario, onGuardar, textoBoton = "Gu
       <CamposRegionComuna region={valores.region} comuna={valores.comuna} onChange={cambiar} errores={errores} />
       <CampoFormulario name="direccion" etiqueta="Dirección" valor={valores.direccion} onChange={cambiar} error={errores.direccion} maxLength={300} />
 
-      <Boton tipo="submit" etiqueta={textoBoton} />
+      <Boton tipo="submit" etiqueta={guardando ? "Guardando..." : textoBoton} disabled={guardando} />
     </form>
   );
 }

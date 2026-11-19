@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { CATEGORIAS } from "../../data/datos";
+import { useTienda } from "../../context/TiendaContext";
 import { useFormulario } from "../../hooks/useFormulario";
 import CampoFormulario from "../common/CampoFormulario";
 import Alerta from "../common/Alerta";
 import Boton from "../common/Boton";
 import { primerError, validarMaximo, validarMinimo, validarNumero, validarRequerido } from "../../utils/validaciones";
 
-const TAMANO_MAXIMO_IMAGEN = 500 * 1024; // 500 KB (se guarda en localStorage)
+const TAMANO_MAXIMO_IMAGEN = 500 * 1024; // 500 KB (se envía en Base64 y se guarda en la columna CLOB)
 
 export const validarProducto = (v) => ({
   codigo: primerError(validarRequerido(v.codigo, "El código"), validarMinimo(v.codigo.trim(), 3, "El código")),
@@ -26,6 +26,8 @@ function aValoresFormulario(producto) {
   }
   return {
     ...producto,
+    descripcion: producto.descripcion || "",
+    imagen: producto.imagen || "",
     precio: String(producto.precio),
     descuento: String(producto.descuento ?? 0),
     stock: String(producto.stock),
@@ -35,10 +37,12 @@ function aValoresFormulario(producto) {
 
 /** Formulario de creación/edición de productos. onGuardar recibe el producto ya convertido. */
 export default function FormularioProducto({ producto, onGuardar, textoBoton = "Guardar producto" }) {
+  const { categorias } = useTienda();
   const esEdicion = Boolean(producto);
   const { valores, errores, cambiar, asignar, validarTodo, reiniciar } = useFormulario(aValoresFormulario(producto), validarProducto);
   const [resultado, setResultado] = useState(null);
   const [errorImagen, setErrorImagen] = useState("");
+  const [guardando, setGuardando] = useState(false);
 
   function cargarImagen(evento) {
     const archivo = evento.target.files[0];
@@ -51,7 +55,7 @@ export default function FormularioProducto({ producto, onGuardar, textoBoton = "
     lector.readAsDataURL(archivo);
   }
 
-  function enviar(evento) {
+  async function enviar(evento) {
     evento.preventDefault();
     if (!validarTodo() || errorImagen) {
       setResultado({ tipo: "danger", texto: "Revisa los campos marcados en rojo." });
@@ -68,12 +72,15 @@ export default function FormularioProducto({ producto, onGuardar, textoBoton = "
       stockCritico: valores.stockCritico === "" ? null : Number(valores.stockCritico),
       imagen: valores.imagen || "/img/logo.png",
     };
+    setGuardando(true);
     try {
-      onGuardar(datos);
+      await onGuardar(datos);
       setResultado({ tipo: "success", texto: esEdicion ? "Producto actualizado correctamente." : "Producto creado correctamente." });
       if (!esEdicion) reiniciar();
     } catch (error) {
       setResultado({ tipo: "danger", texto: error.message });
+    } finally {
+      setGuardando(false);
     }
   }
 
@@ -111,7 +118,7 @@ export default function FormularioProducto({ producto, onGuardar, textoBoton = "
         <div className="col-md-4">
           <CampoFormulario como="select" name="categoria" etiqueta="Categoría" valor={valores.categoria} onChange={cambiar} error={errores.categoria}>
             <option value="">-- Seleccione --</option>
-            {CATEGORIAS.map((c) => (
+            {categorias.map((c) => (
               <option key={c.id} value={c.nombre}>
                 {c.nombre}
               </option>
@@ -149,7 +156,7 @@ export default function FormularioProducto({ producto, onGuardar, textoBoton = "
         {valores.imagen && <img src={valores.imagen} alt="Vista previa" className="mt-2 rounded vista-previa-imagen" />}
       </div>
 
-      <Boton tipo="submit" etiqueta={textoBoton} />
+      <Boton tipo="submit" etiqueta={guardando ? "Guardando..." : textoBoton} disabled={guardando} />
     </form>
   );
 }

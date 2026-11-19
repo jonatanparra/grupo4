@@ -1,58 +1,18 @@
 /* =========================================================
    Utilidades compartidas por las pruebas.
    ========================================================= */
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
-import { TiendaProvider } from "../context/TiendaContext";
-import { crearServicios } from "../data/servicios";
+import { TiendaProvider, useTienda } from "../context/TiendaContext";
+import { crearApiFalsa } from "./apiFalsa";
+import { USUARIOS } from "./datosPrueba";
 
-/**
- * Mock de localStorage en memoria. Así cada prueba trabaja con su propia
- * "base de datos" sin tocar el almacenamiento real del navegador.
- */
-export function crearAlmacenamientoFalso(datosIniciales = {}) {
-  const datos = new Map(Object.entries(datosIniciales));
-  return {
-    getItem: (clave) => (datos.has(clave) ? datos.get(clave) : null),
-    setItem: (clave, valor) => datos.set(clave, String(valor)),
-    removeItem: (clave) => datos.delete(clave),
-    clear: () => datos.clear(),
-  };
-}
-
-/** Servicios de datos sobre un almacenamiento falso, con valores iniciales opcionales. */
-export function crearServiciosPrueba({ carrito, sesion } = {}) {
-  const iniciales = {};
-  if (carrito) iniciales.glitch_carrito = JSON.stringify(carrito);
-  if (sesion) iniciales.glitch_sesion = JSON.stringify(sesion);
-  return crearServicios(crearAlmacenamientoFalso(iniciales));
-}
+export { crearApiFalsa, crearAlmacenamientoFalso } from "./apiFalsa";
 
 /** Muestra la ruta actual para comprobar redirecciones en las pruebas. */
 function RutaActual() {
   const { pathname } = useLocation();
   return <div data-testid="ruta-actual">{pathname}</div>;
-}
-
-/**
- * Renderiza un componente dentro del router y del contexto de la tienda.
- * - ruta: URL inicial (ej: "/producto/GS-001").
- * - patron: patrón de la ruta (ej: "/producto/:codigo") para que funcione useParams.
- * - servicios: servicios de datos (por defecto, sobre un almacenamiento falso).
- */
-export function renderConTienda(ui, { ruta = "/", patron = "*", servicios = crearServiciosPrueba() } = {}) {
-  const resultado = render(
-    <MemoryRouter initialEntries={[ruta]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <TiendaProvider servicios={servicios}>
-        <Routes>
-          <Route path={patron} element={ui} />
-          <Route path="*" element={<RutaActual />} />
-        </Routes>
-        <RutaActualOculta />
-      </TiendaProvider>
-    </MemoryRouter>
-  );
-  return { ...resultado, servicios };
 }
 
 /** Siempre presente (fuera de Routes) para leer la ruta después de navegar. */
@@ -65,24 +25,57 @@ function RutaActualOculta() {
   );
 }
 
-export const USUARIO_CLIENTE = {
-  run: "203344112",
-  nombre: "Javiera",
-  apellidos: "Contreras Díaz",
-  correo: "javiera.contreras@profesor.duoc.cl",
-  tipo: "Cliente",
-  region: "nuble",
-  comuna: "chillan",
-  direccion: "Camino Real 789",
-};
+/** Expone el estado del contexto para saber cuándo terminó de cargar. */
+function Sonda({ sonda }) {
+  sonda.contexto = useTienda();
+  return null;
+}
 
-export const USUARIO_ADMIN = {
-  run: "191102207",
-  nombre: "Camila",
-  apellidos: "Rojas Muñoz",
-  correo: "camila.rojas@duoc.cl",
-  tipo: "Administrador",
-  region: "metropolitana",
-  comuna: "santiago",
-  direccion: "Av. Siempre Viva 123",
-};
+/**
+ * Espera (reintentando) hasta que la condición se cumpla. En Jasmine un expect fallido
+ * no lanza excepción, por eso waitFor(() => expect(...)) no reintenta: aquí se lanza a mano.
+ */
+export function esperarQue(condicion, descripcion = "la condición") {
+  return waitFor(() => {
+    if (!condicion()) throw new Error(`No se cumplió: ${descripcion}`);
+  });
+}
+
+/** Espera a que el contexto termine de pedir catálogo, sesión y datos del rol a la API. */
+export async function esperarCarga(sonda) {
+  await waitFor(() => {
+    const c = sonda.contexto;
+    if (!c || c.catalogo.cargando || c.verificandoSesion || c.datosRol.cargando) throw new Error("La tienda aún está cargando");
+  });
+}
+
+/**
+ * Renderiza un componente dentro del router y del contexto de la tienda, y espera a que
+ * terminen las peticiones iniciales a la API (falsa).
+ * - ruta: URL inicial (ej: "/producto/GS-001").
+ * - patron: patrón de la ruta (ej: "/producto/:codigo") para que funcione useParams.
+ * - api: API simulada (por defecto, una nueva con los datos de prueba).
+ */
+export async function renderConTienda(ui, { ruta = "/", patron = "*", api = crearApiFalsa() } = {}) {
+  const sonda = {};
+  const resultado = render(
+    <MemoryRouter initialEntries={[ruta]} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <TiendaProvider api={api}>
+        <Sonda sonda={sonda} />
+        <Routes>
+          <Route path={patron} element={ui} />
+          <Route path="*" element={<RutaActual />} />
+        </Routes>
+        <RutaActualOculta />
+      </TiendaProvider>
+    </MemoryRouter>
+  );
+  await esperarCarga(sonda);
+  return { ...resultado, api, sonda };
+}
+
+const sinContrasena = ({ contrasena, ...usuario }) => usuario;
+
+export const USUARIO_ADMIN = sinContrasena(USUARIOS[0]);
+export const USUARIO_VENDEDOR = sinContrasena(USUARIOS[1]);
+export const USUARIO_CLIENTE = sinContrasena(USUARIOS[2]);

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { CATEGORIAS } from "../../data/datos";
+import { useTienda } from "../../context/TiendaContext";
 import { validarCorreo } from "../../utils/validaciones";
 
 /** Pie de página con enlaces y suscripción al newsletter (validada). */
 export default function PiePagina() {
+  const { categorias } = useTienda();
   const [correo, setCorreo] = useState("");
   const [mensaje, setMensaje] = useState(null);
 
@@ -26,7 +27,7 @@ export default function PiePagina() {
           <div className="col-6 col-lg-3">
             <h4 className="h6">Categorías</h4>
             <ul className="list-unstyled">
-              {CATEGORIAS.map((c) => (
+              {categorias.map((c) => (
                 <li key={c.id}>
                   <Link to={`/categorias/${c.id}`}>{c.nombre}</Link>
                 </li>

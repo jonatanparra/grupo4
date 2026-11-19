@@ -1,13 +1,12 @@
 import { useTienda } from "../../context/TiendaContext";
-import { CATEGORIAS } from "../../data/datos";
 import EncabezadoAdmin from "../../components/admin/EncabezadoAdmin";
 import TarjetaEstadistica from "../../components/admin/TarjetaEstadistica";
-import { formatoCLP } from "../../utils/formato";
+import { esVentaConcretada, formatoCLP } from "../../utils/formato";
 
 /** Reportes de ventas calculados en tiempo real a partir de las órdenes pagadas. */
 export default function AdminReportes() {
-  const { ordenes, productos } = useTienda();
-  const pagadas = ordenes.filter((o) => o.estado === "Pagado");
+  const { ordenes, productos, categorias } = useTienda();
+  const pagadas = ordenes.filter(esVentaConcretada);
   const ingresos = pagadas.reduce((t, o) => t + o.total, 0);
   const tasaExito = ordenes.length ? Math.round((pagadas.length / ordenes.length) * 100) : 0;
 
@@ -15,14 +14,14 @@ export default function AdminReportes() {
   const porProducto = {};
   pagadas.forEach((o) =>
     o.items.forEach((item) => {
-      porProducto[item.codigo] ??= { nombre: item.nombre, unidades: 0, ingresos: 0 };
-      porProducto[item.codigo].unidades += item.cantidad;
-      porProducto[item.codigo].ingresos += item.cantidad * item.precioUnitario;
+      porProducto[item.codigo ?? item.nombre] ??= { nombre: item.nombre, unidades: 0, ingresos: 0 };
+      porProducto[item.codigo ?? item.nombre].unidades += item.cantidad;
+      porProducto[item.codigo ?? item.nombre].ingresos += item.cantidad * item.precioUnitario;
     })
   );
   const ranking = Object.entries(porProducto).sort(([, a], [, b]) => b.unidades - a.unidades);
 
-  const porCategoria = CATEGORIAS.map((c) => {
+  const porCategoria = categorias.map((c) => {
     const codigos = productos.filter((p) => p.categoria === c.nombre).map((p) => p.codigo);
     const ingresosCategoria = codigos.reduce((t, cod) => t + (porProducto[cod]?.ingresos || 0), 0);
     return { ...c, ingresos: ingresosCategoria };

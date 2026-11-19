@@ -1,4 +1,5 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
+import { useTienda } from "./context/TiendaContext";
 import LayoutTienda from "./components/layout/LayoutTienda";
 import LayoutAdmin from "./components/layout/LayoutAdmin";
 import RutaProtegida from "./components/common/RutaProtegida";
@@ -19,6 +20,7 @@ import Nosotros from "./pages/Nosotros";
 import Blogs from "./pages/Blogs";
 import BlogDetalle from "./pages/BlogDetalle";
 import NoEncontrado from "./pages/NoEncontrado";
+import MisCompras from "./pages/MisCompras";
 
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import { AdminOrdenDetalle, AdminOrdenes } from "./pages/admin/AdminOrdenes";
@@ -34,6 +36,15 @@ import AdminReportes from "./pages/admin/AdminReportes";
 
 const STAFF = ["Administrador", "Vendedor"];
 const SOLO_ADMIN = ["Administrador"];
+const CON_SESION = ["Administrador", "Vendedor", "Cliente"];
+
+const soloAdmin = (pagina) => <RutaProtegida roles={SOLO_ADMIN}>{pagina}</RutaProtegida>;
+
+/** /admin: el Administrador ve el dashboard; el Vendedor parte en Órdenes (no tiene dashboard). */
+function InicioAdmin() {
+  const { usuarioActual } = useTienda();
+  return usuarioActual?.tipo === "Administrador" ? <AdminDashboard /> : <Navigate to="/admin/ordenes" replace />;
+}
 
 /** Mapa de rutas de la aplicación (flujo de navegación tienda + panel administrativo). */
 export default function App() {
@@ -57,6 +68,7 @@ export default function App() {
         <Route path="/nosotros" element={<Nosotros />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/blogs/:id" element={<BlogDetalle />} />
+        <Route path="/mis-compras" element={<RutaProtegida roles={CON_SESION}><MisCompras /></RutaProtegida>} />
         <Route path="*" element={<NoEncontrado />} />
       </Route>
 
@@ -69,19 +81,21 @@ export default function App() {
           </RutaProtegida>
         }
       >
-        <Route index element={<AdminDashboard />} />
+        {/* Administrador y Vendedor: lista y detalle de órdenes y productos */}
+        <Route index element={<InicioAdmin />} />
         <Route path="ordenes" element={<AdminOrdenes />} />
         <Route path="ordenes/:id" element={<AdminOrdenDetalle />} />
         <Route path="productos" element={<AdminProductos />} />
-        <Route path="productos-criticos" element={<AdminProductosCriticos />} />
-        <Route path="productos/nuevo" element={<RutaProtegida roles={SOLO_ADMIN}><AdminProductoNuevo /></RutaProtegida>} />
         <Route path="productos/:codigo" element={<AdminProductoMostrar />} />
-        <Route path="productos/:codigo/editar" element={<RutaProtegida roles={SOLO_ADMIN}><AdminProductoEditar /></RutaProtegida>} />
-        <Route path="usuarios" element={<RutaProtegida roles={SOLO_ADMIN}><AdminUsuarios /></RutaProtegida>} />
-        <Route path="usuarios/nuevo" element={<RutaProtegida roles={SOLO_ADMIN}><AdminUsuarioNuevo /></RutaProtegida>} />
-        <Route path="usuarios/:run" element={<RutaProtegida roles={SOLO_ADMIN}><AdminUsuarioMostrar /></RutaProtegida>} />
-        <Route path="usuarios/:run/editar" element={<RutaProtegida roles={SOLO_ADMIN}><AdminUsuarioEditar /></RutaProtegida>} />
-        <Route path="reportes" element={<AdminReportes />} />
+        {/* Solo Administrador */}
+        <Route path="productos-criticos" element={soloAdmin(<AdminProductosCriticos />)} />
+        <Route path="productos/nuevo" element={soloAdmin(<AdminProductoNuevo />)} />
+        <Route path="productos/:codigo/editar" element={soloAdmin(<AdminProductoEditar />)} />
+        <Route path="usuarios" element={soloAdmin(<AdminUsuarios />)} />
+        <Route path="usuarios/nuevo" element={soloAdmin(<AdminUsuarioNuevo />)} />
+        <Route path="usuarios/:run" element={soloAdmin(<AdminUsuarioMostrar />)} />
+        <Route path="usuarios/:run/editar" element={soloAdmin(<AdminUsuarioEditar />)} />
+        <Route path="reportes" element={soloAdmin(<AdminReportes />)} />
       </Route>
     </Routes>
   );

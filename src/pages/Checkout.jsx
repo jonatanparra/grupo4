@@ -1,10 +1,12 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useTienda } from "../context/TiendaContext";
 import { useFormulario } from "../hooks/useFormulario";
 import CampoFormulario from "../components/common/CampoFormulario";
 import CamposRegionComuna from "../components/common/CamposRegionComuna";
 import Boton from "../components/common/Boton";
+import Alerta from "../components/common/Alerta";
+import Cargando from "../components/common/Cargando";
 import ResumenCarrito from "../components/carrito/ResumenCarrito";
 import { calcularTotales, detalleCarrito } from "../utils/carrito";
 import { formatoCLP } from "../utils/formato";
@@ -44,10 +46,22 @@ function valoresIniciales(usuario) {
   };
 }
 
+/**
+ * Espera el catálogo y la confirmación de la sesión antes de armar el formulario:
+ * así, aunque se recargue la página en /checkout, los datos del cliente se autocompletan.
+ */
 export default function Checkout() {
+  const { catalogo, verificandoSesion } = useTienda();
+  if (catalogo.cargando || verificandoSesion) return <Cargando mensaje="Cargando el checkout..." />;
+  return <FormularioCheckout />;
+}
+
+function FormularioCheckout() {
   const { carrito, productos, cupon, usuarioActual, procesarCompra } = useTienda();
   const navegar = useNavigate();
   const compraEnviada = useRef(false);
+  const [pagando, setPagando] = useState(false);
+  const [errorPago, setErrorPago] = useState("");
   const { valores, errores, cambiar, validarTodo } = useFormulario(valoresIniciales(usuarioActual), validarCheckout);
 
   const lineas = detalleCarrito(carrito, productos);
@@ -55,12 +69,21 @@ export default function Checkout() {
 
   const totales = calcularTotales(carrito, productos, cupon, valores.tipoEnvio);
 
-  function pagar(evento) {
+  /** El backend recalcula los montos, valida el stock y responde con la boleta (Pagado o Rechazado). */
+  async function pagar(evento) {
     evento.preventDefault();
+    setErrorPago("");
     if (!validarTodo()) return;
     compraEnviada.current = true;
-    const orden = procesarCompra(valores, { simularRechazo: valores.simularRechazo });
-    navegar(`/compra/${orden.estado === "Pagado" ? "exito" : "error"}/${orden.id}`);
+    setPagando(true);
+    try {
+      const orden = await procesarCompra(valores, { simularRechazo: valores.simularRechazo });
+      navegar(`/compra/${orden.estado === "Pagado" ? "exito" : "error"}/${orden.id}`);
+    } catch (error) {
+      compraEnviada.current = false;
+      setPagando(false);
+      setErrorPago(error.message);
+    }
   }
 
   return (
@@ -165,7 +188,8 @@ export default function Checkout() {
                 </li>
               ))}
             </ul>
-            <Boton tipo="submit" etiqueta={`Pagar ahora ${formatoCLP(totales.total)}`} ancho tamano="lg" />
+            <Alerta tipo="danger" mensaje={errorPago} />
+            <Boton tipo="submit" etiqueta={pagando ? "Procesando pago..." : `Pagar ahora ${formatoCLP(totales.total)}`} disabled={pagando} ancho tamano="lg" />
           </ResumenCarrito>
         </div>
       </form>

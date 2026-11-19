@@ -4,7 +4,7 @@ import GrillaProductos from "./GrillaProductos";
 import TarjetaProducto from "./TarjetaProducto";
 import FiltroCategorias from "./FiltroCategorias";
 import BarraBusqueda from "./BarraBusqueda";
-import { PRODUCTOS } from "../../data/datos";
+import { PRODUCTOS } from "../../test/datosPrueba";
 
 const conRouter = (ui) => render(<MemoryRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>{ui}</MemoryRouter>);
 

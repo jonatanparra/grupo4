@@ -4,6 +4,7 @@ import { useTienda } from "../context/TiendaContext";
 import ResumenOrden from "../components/carrito/ResumenOrden";
 import EstadoVacio from "../components/common/EstadoVacio";
 import Boton from "../components/common/Boton";
+import Cargando from "../components/common/Cargando";
 import { confetiHalloween } from "../utils/confettiHalloween"; // nuevo import
 
 /**
@@ -13,14 +14,27 @@ import { confetiHalloween } from "../utils/confettiHalloween"; // nuevo import
  */
 export default function CompraResultado({ exito }) {
   const { id } = useParams();
-  const { ordenes } = useTienda();
+  const { obtenerOrden, verificandoSesion } = useTienda();
   const [boletaEnviada, setBoletaEnviada] = useState(false);
-  const orden = ordenes.find((o) => o.id === id);
+  const [carga, setCarga] = useState({ cargando: true, orden: null });
+  const orden = carga.orden;
+
+  // La orden recién comprada está en memoria; si se recarga la página y hay sesión, se pide al backend.
+  useEffect(() => {
+    if (verificandoSesion) return;
+    let vigente = true;
+    obtenerOrden(id).then((encontrada) => vigente && setCarga({ cargando: false, orden: encontrada }));
+    return () => {
+      vigente = false;
+    };
+  }, [id, obtenerOrden, verificandoSesion]);
 
   // nuevo: disparo el confeti una sola vez cuando la compra fue exitosa
   useEffect(() => {
     if (exito && orden) confetiHalloween();
   }, [exito, orden?.id]);
+
+  if (carga.cargando) return <Cargando mensaje="Cargando la boleta..." />;
 
   if (!orden) {
     return (

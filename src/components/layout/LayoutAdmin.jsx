@@ -1,22 +1,33 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useTienda } from "../../context/TiendaContext";
+import Cargando from "../common/Cargando";
+import ErrorConexion from "../common/ErrorConexion";
 
-const SECCIONES = [
-  { ruta: "/admin", texto: "📊 Dashboard", fin: true },
-  { ruta: "/admin/ordenes", texto: "🧾 Órdenes" },
-  { ruta: "/admin/productos", texto: "🎮 Productos" },
-  { ruta: "/admin/productos-criticos", texto: "⚠️ Stock crítico" },
-  { ruta: "/admin/usuarios", texto: "👤 Usuarios", soloAdmin: true },
-  { ruta: "/admin/reportes", texto: "📈 Reportes" },
+const ADMIN = ["Administrador"];
+const STAFF = ["Administrador", "Vendedor"];
+
+/**
+ * Secciones del panel y qué roles las ven (Anexo 1): el Vendedor solo ve
+ * Órdenes y Productos (lista y detalle); el resto es exclusivo del Administrador.
+ */
+export const SECCIONES = [
+  { ruta: "/admin", texto: "📊 Dashboard", fin: true, roles: ADMIN },
+  { ruta: "/admin/ordenes", texto: "🧾 Órdenes", roles: STAFF },
+  { ruta: "/admin/productos", texto: "🎮 Productos", roles: STAFF },
+  { ruta: "/admin/productos-criticos", texto: "⚠️ Stock crítico", roles: ADMIN },
+  { ruta: "/admin/usuarios", texto: "👤 Usuarios", roles: ADMIN },
+  { ruta: "/admin/reportes", texto: "📈 Reportes", roles: ADMIN },
 ];
 
 /** Layout del panel administrativo: barra lateral (colapsable en móvil) + contenido. */
 export default function LayoutAdmin() {
-  const { usuarioActual, cerrarSesion } = useTienda();
+  const { usuarioActual, cerrarSesion, catalogo, datosRol, cargarCatalogo } = useTienda();
   const [menuAbierto, setMenuAbierto] = useState(false);
   const navegar = useNavigate();
-  const secciones = SECCIONES.filter((s) => !s.soloAdmin || usuarioActual?.tipo === "Administrador");
+  const secciones = SECCIONES.filter((s) => s.roles.includes(usuarioActual?.tipo));
+  const cargando = catalogo.cargando || datosRol.cargando;
+  const error = catalogo.error || datosRol.error;
 
   function salir() {
     cerrarSesion();
@@ -64,7 +75,7 @@ export default function LayoutAdmin() {
               {usuarioActual?.nombre} · {usuarioActual?.tipo}
             </span>
           </div>
-          <Outlet />
+          {cargando ? <Cargando mensaje="Cargando datos del panel..." /> : error ? <ErrorConexion mensaje={error} onReintentar={cargarCatalogo} /> : <Outlet />}
         </main>
       </div>
     </div>

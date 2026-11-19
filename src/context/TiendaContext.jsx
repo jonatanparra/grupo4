@@ -1,41 +1,138 @@
 /* =========================================================
    Contexto global de la tienda.
-   Conecta la capa de persistencia (servicios/localStorage) con
-   los componentes React: cada acción guarda en la "base de datos"
-   y actualiza el estado, por lo que la interfaz se refresca al
-   instante (ej: al comprar baja el stock en el panel admin).
+   Conecta la API REST (backend Spring Boot) con los componentes:
+   - Al iniciar carga el catálogo (productos y categorías).
+   - Si hay tokens guardados, confirma la sesión con /auth/me
+     (el rol siempre lo informa el backend, no el navegador).
+   - Según el rol carga lo que corresponde: usuarios y órdenes
+     (Administrador), órdenes (Vendedor) o sus compras (Cliente).
+   - Cada acción llama a la API y actualiza el estado con la
+     respuesta, por lo que la interfaz se refresca al instante.
    ========================================================= */
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { crearServicios } from "../data/servicios";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { crearApi } from "../api/servicios";
 import * as Carrito from "../utils/carrito";
 
 const TiendaContext = createContext(null);
 
-/** Quita la contraseña antes de guardar al usuario en la sesión. */
-function datosSesion(usuario) {
-  const { contrasena, ...publico } = usuario;
-  return publico;
-}
+const porCodigo = (a, b) => a.codigo.localeCompare(b.codigo);
+const porNombre = (a, b) => a.nombre.localeCompare(b.nombre);
 
-export function TiendaProvider({ children, servicios: serviciosInyectados }) {
-  // En las pruebas se pueden inyectar servicios simulados (mocks).
-  const servicios = useMemo(() => serviciosInyectados || crearServicios(), [serviciosInyectados]);
-  const { productosDB, usuariosDB, ordenesDB, carritoStore, sesionStore } = servicios;
+export function TiendaProvider({ children, api: apiInyectada }) {
+  // En las pruebas se inyecta una API falsa (mock) que no usa la red.
+  const api = useMemo(() => apiInyectada || crearApi(), [apiInyectada]);
 
-  const [productos, setProductos] = useState(() => productosDB.listar());
-  const [usuarios, setUsuarios] = useState(() => usuariosDB.listar());
-  const [ordenes, setOrdenes] = useState(() => ordenesDB.listar());
-  const [carrito, setCarrito] = useState(() => carritoStore.leer());
-  const [usuarioActual, setUsuarioActual] = useState(() => sesionStore.leer());
+  const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [catalogo, setCatalogo] = useState({ cargando: true, error: "" });
+  const [usuarios, setUsuarios] = useState([]);
+  const [ordenes, setOrdenes] = useState([]);
+  const [datosRol, setDatosRol] = useState({ cargando: false, error: "" });
+  const [carrito, setCarrito] = useState(() => api.carrito.leer());
+  const [usuarioActual, setUsuarioActual] = useState(null);
+  const [verificandoSesion, setVerificandoSesion] = useState(() => api.auth.haySesion());
   const [cupon, setCupon] = useState("");
 
-  // ---------- Carrito ----------
+  // ---------- Catálogo ----------
+  const cargarCatalogo = useCallback(async () => {
+    setCatalogo({ cargando: true, error: "" });
+    try {
+      const [listaProductos, listaCategorias] = await Promise.all([api.productos.listar(), api.categorias.listar()]);
+      setProductos(listaProductos);
+      setCategorias(listaCategorias);
+      setCatalogo({ cargando: false, error: "" });
+    } catch (error) {
+      setCatalogo({ cargando: false, error: error.message });
+    }
+  }, [api]);
+
+  useEffect(() => {
+    cargarCatalogo();
+  }, [cargarCatalogo]);
+
+  // ---------- Sesión ----------
+  // Al recargar la página: si hay tokens, el backend confirma quién es el usuario y su rol.
+  useEffect(() => {
+    if (!api.auth.haySesion()) return;
+    let vigente = true;
+    api.auth
+      .perfil()
+      .then((usuario) => vigente && setUsuarioActual(usuario))
+      .catch(() => api.auth.cerrarSesion())
+      .finally(() => vigente && setVerificandoSesion(false));
+    return () => {
+      vigente = false;
+    };
+  }, [api]);
+
+  // Si el token de renovación también venció, la sesión se cierra en toda la app.
+  useEffect(() => api.alExpirarSesion(() => setUsuarioActual(null)), [api]);
+
+  // Datos que dependen del rol
+  const cargarDatosRol = useCallback(
+    async (usuario) => {
+      if (!usuario) {
+        setUsuarios([]);
+        setOrdenes([]);
+        return;
+      }
+      setDatosRol({ cargando: true, error: "" });
+      try {
+        if (usuario.tipo === "Administrador") {
+          const [listaUsuarios, listaOrdenes] = await Promise.all([api.usuarios.listar(), api.boletas.listar()]);
+          setUsuarios(listaUsuarios);
+          setOrdenes(listaOrdenes);
+        } else if (usuario.tipo === "Vendedor") {
+          setUsuarios([]);
+          setOrdenes(await api.boletas.listar());
+        } else {
+          setUsuarios([]);
+          setOrdenes(await api.boletas.mias());
+        }
+        setDatosRol({ cargando: false, error: "" });
+      } catch (error) {
+        setDatosRol({ cargando: false, error: error.message });
+      }
+    },
+    [api]
+  );
+
+  const runActual = usuarioActual?.run;
+  const tipoActual = usuarioActual?.tipo;
+  useEffect(() => {
+    cargarDatosRol(runActual ? { run: runActual, tipo: tipoActual } : null);
+  }, [runActual, tipoActual, cargarDatosRol]);
+
+  const iniciarSesion = useCallback(
+    async (correo, contrasena) => {
+      const usuario = await api.auth.iniciarSesion(correo, contrasena);
+      setUsuarioActual(usuario);
+      return usuario;
+    },
+    [api]
+  );
+
+  const registrar = useCallback(
+    async (datos) => {
+      const usuario = await api.auth.registrar(datos);
+      setUsuarioActual(usuario);
+      return usuario;
+    },
+    [api]
+  );
+
+  const cerrarSesion = useCallback(() => {
+    api.auth.cerrarSesion();
+    setUsuarioActual(null);
+  }, [api]);
+
+  // ---------- Carrito (se guarda en el navegador) ----------
   const guardarCarrito = useCallback(
     (nuevo) => {
-      carritoStore.guardar(nuevo);
+      api.carrito.guardar(nuevo);
       setCarrito(nuevo);
     },
-    [carritoStore]
+    [api]
   );
 
   const buscarProducto = useCallback((codigo) => productos.find((p) => p.codigo === codigo), [productos]);
@@ -66,111 +163,71 @@ export function TiendaProvider({ children, servicios: serviciosInyectados }) {
     return false;
   }, []);
 
-  // ---------- Productos (CRUD) ----------
+  // ---------- Productos (CRUD vía API) ----------
   const crearProducto = useCallback(
-    (producto) => {
-      if (productosDB.obtener(producto.codigo)) throw new Error(`Ya existe un producto con el código ${producto.codigo}.`);
-      productosDB.crear(producto);
-      setProductos(productosDB.listar());
+    async (producto) => {
+      const creado = await api.productos.crear(producto);
+      setProductos((lista) => [...lista, creado].sort(porCodigo));
+      return creado;
     },
-    [productosDB]
+    [api]
   );
 
   const actualizarProducto = useCallback(
-    (codigo, cambios) => {
-      productosDB.actualizar(codigo, cambios);
-      setProductos(productosDB.listar());
+    async (codigo, cambios) => {
+      const actualizado = await api.productos.actualizar(codigo, cambios);
+      setProductos((lista) => lista.map((p) => (p.codigo === codigo ? actualizado : p)));
+      return actualizado;
     },
-    [productosDB]
+    [api]
   );
 
   const eliminarProducto = useCallback(
-    (codigo) => {
-      productosDB.eliminar(codigo);
-      setProductos(productosDB.listar());
-      guardarCarrito(Carrito.quitarItem(carritoStore.leer(), codigo));
+    async (codigo) => {
+      await api.productos.eliminar(codigo);
+      setProductos((lista) => lista.filter((p) => p.codigo !== codigo));
+      guardarCarrito(Carrito.quitarItem(api.carrito.leer(), codigo));
     },
-    [productosDB, carritoStore, guardarCarrito]
+    [api, guardarCarrito]
   );
 
-  // ---------- Usuarios (CRUD) ----------
+  // ---------- Usuarios (CRUD vía API, solo Administrador) ----------
   const crearUsuario = useCallback(
-    (usuario) => {
-      if (usuariosDB.obtener(usuario.run)) throw new Error("Ya existe un usuario con ese RUN.");
-      if (usuariosDB.listar().some((u) => u.correo.toLowerCase() === usuario.correo.toLowerCase())) {
-        throw new Error("Ya existe una cuenta con ese correo.");
-      }
-      usuariosDB.crear(usuario);
-      setUsuarios(usuariosDB.listar());
+    async (usuario) => {
+      const creado = await api.usuarios.crear(usuario);
+      setUsuarios((lista) => [...lista, creado].sort(porNombre));
+      return creado;
     },
-    [usuariosDB]
+    [api]
   );
 
   const actualizarUsuario = useCallback(
-    (run, cambios) => {
-      const actualizado = usuariosDB.actualizar(run, cambios);
-      setUsuarios(usuariosDB.listar());
-      if (usuarioActual?.run === run) {
-        const sesion = datosSesion(actualizado);
-        sesionStore.guardar(sesion);
-        setUsuarioActual(sesion);
-      }
+    async (run, cambios) => {
+      const actualizado = await api.usuarios.actualizar(run, cambios);
+      setUsuarios((lista) => lista.map((u) => (u.run === run ? actualizado : u)));
+      if (runActual === run) setUsuarioActual(actualizado);
+      return actualizado;
     },
-    [usuariosDB, sesionStore, usuarioActual]
+    [api, runActual]
   );
 
   const eliminarUsuario = useCallback(
-    (run) => {
-      usuariosDB.eliminar(run);
-      setUsuarios(usuariosDB.listar());
+    async (run) => {
+      await api.usuarios.eliminar(run);
+      setUsuarios((lista) => lista.filter((u) => u.run !== run));
     },
-    [usuariosDB]
+    [api]
   );
-
-  // ---------- Sesión ----------
-  const iniciarSesion = useCallback(
-    (correo, contrasena) => {
-      const usuario = usuariosDB
-        .listar()
-        .find((u) => u.correo.toLowerCase() === correo.trim().toLowerCase() && u.contrasena === contrasena);
-      if (!usuario) return null;
-      const sesion = datosSesion(usuario);
-      sesionStore.guardar(sesion);
-      setUsuarioActual(sesion);
-      return sesion;
-    },
-    [usuariosDB, sesionStore]
-  );
-
-  const cerrarSesion = useCallback(() => {
-    sesionStore.guardar(null);
-    setUsuarioActual(null);
-  }, [sesionStore]);
 
   // ---------- Compra ----------
   /**
-   * Registra una orden con los datos del checkout.
-   * Si el pago es rechazado (simulado) o falta stock, la orden queda "Rechazado"
-   * y el carrito se conserva para reintentar. Si se paga, se descuenta stock y
-   * se vacía el carrito.
+   * Envía la compra al backend, que calcula precios y totales, valida el stock
+   * y responde con la boleta "Pagado" o "Rechazado". Si se paga, se vacía el
+   * carrito y se recarga el catálogo (cambió el stock).
    */
   const procesarCompra = useCallback(
-    (datos, { simularRechazo = false } = {}) => {
-      const productosActuales = productosDB.listar();
-      const lineas = Carrito.detalleCarrito(carrito, productosActuales);
-      const totales = Carrito.calcularTotales(carrito, productosActuales, cupon, datos.tipoEnvio);
-      const sinStock = Carrito.lineasSinStock(carrito, productosActuales);
-
-      let motivoRechazo = "";
-      if (!lineas.length) motivoRechazo = "El carrito está vacío.";
-      else if (sinStock.length) motivoRechazo = "No hay stock suficiente para uno o más productos.";
-      else if (simularRechazo) motivoRechazo = "El medio de pago fue rechazado por el banco emisor.";
-
-      const orden = {
-        id: servicios.siguienteIdOrden(),
-        fecha: new Date().toISOString(),
-        estado: motivoRechazo ? "Rechazado" : "Pagado",
-        motivoRechazo,
+    async (datos, { simularRechazo = false } = {}) => {
+      const orden = await api.boletas.comprar({
         cliente: { nombre: datos.nombre, apellidos: datos.apellidos, correo: datos.correo },
         envio: {
           tipo: datos.tipoEnvio,
@@ -181,32 +238,61 @@ export function TiendaProvider({ children, servicios: serviciosInyectados }) {
           indicaciones: datos.indicaciones,
         },
         metodoPago: datos.metodoPago,
-        items: lineas.map((l) => ({ codigo: l.codigo, nombre: l.producto.nombre, precioUnitario: l.precioUnitario, cantidad: l.cantidad })),
+        items: carrito.map(({ codigo, cantidad }) => ({ codigo, cantidad })),
         cupon,
-        ...totales,
-      };
-
-      ordenesDB.crear(orden);
-      setOrdenes(ordenesDB.listar());
-
+        simularRechazo,
+      });
+      setOrdenes((lista) => [orden, ...lista]);
       if (orden.estado === "Pagado") {
-        lineas.forEach((l) => productosDB.actualizar(l.codigo, { stock: l.producto.stock - l.cantidad }));
-        setProductos(productosDB.listar());
         guardarCarrito([]);
         setCupon("");
+        api.productos
+          .listar()
+          .then(setProductos)
+          .catch(() => {});
       }
       return orden;
     },
-    [carrito, cupon, servicios, productosDB, ordenesDB, guardarCarrito]
+    [api, carrito, cupon, guardarCarrito]
+  );
+
+  /** Busca una orden en memoria o, si hay sesión, la pide al backend. */
+  const obtenerOrden = useCallback(
+    async (id) => {
+      const local = ordenes.find((o) => o.id === id);
+      if (local) return local;
+      if (!runActual) return null;
+      try {
+        return await api.boletas.obtener(id);
+      } catch {
+        return null;
+      }
+    },
+    [api, ordenes, runActual]
+  );
+
+  const cambiarEstadoOrden = useCallback(
+    async (id, estado) => {
+      const actualizada = await api.boletas.cambiarEstado(id, estado);
+      setOrdenes((lista) => lista.map((o) => (o.id === id ? actualizada : o)));
+      if (estado === "Anulado") api.productos.listar().then(setProductos).catch(() => {});
+      return actualizada;
+    },
+    [api]
   );
 
   const valor = {
     productos,
+    categorias,
+    catalogo,
+    cargarCatalogo,
     usuarios,
     ordenes,
+    datosRol,
     carrito,
     cupon,
     usuarioActual,
+    verificandoSesion,
     agregarAlCarrito,
     cambiarCantidad,
     quitarDelCarrito,
@@ -219,8 +305,11 @@ export function TiendaProvider({ children, servicios: serviciosInyectados }) {
     actualizarUsuario,
     eliminarUsuario,
     iniciarSesion,
+    registrar,
     cerrarSesion,
     procesarCompra,
+    obtenerOrden,
+    cambiarEstadoOrden,
   };
 
   return <TiendaContext.Provider value={valor}>{children}</TiendaContext.Provider>;

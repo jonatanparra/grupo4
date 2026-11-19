@@ -4,11 +4,11 @@ import EncabezadoAdmin from "../../components/admin/EncabezadoAdmin";
 import TarjetaEstadistica from "../../components/admin/TarjetaEstadistica";
 import TablaProductos from "../../components/admin/TablaProductos";
 import TablaOrdenes from "../../components/admin/TablaOrdenes";
-import { esStockCritico, formatoCLP } from "../../utils/formato";
+import { esStockCritico, esVentaConcretada, formatoCLP } from "../../utils/formato";
 
 export default function AdminDashboard() {
   const { productos, usuarios, ordenes, usuarioActual } = useTienda();
-  const pagadas = ordenes.filter((o) => o.estado === "Pagado");
+  const pagadas = ordenes.filter(esVentaConcretada);
   const ventas = pagadas.reduce((total, o) => total + o.total, 0);
   const criticos = productos.filter(esStockCritico);
   const ultimas = [...ordenes].sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 5);

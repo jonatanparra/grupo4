@@ -7,11 +7,11 @@ import SelectorCantidad from "../components/common/SelectorCantidad";
 import InsigniaStock from "../components/common/InsigniaStock";
 import EstadoVacio from "../components/common/EstadoVacio";
 import GrillaProductos from "../components/productos/GrillaProductos";
-import { categoriaPorNombre, esStockCritico } from "../utils/formato";
+import { esStockCritico } from "../utils/formato";
 
 export default function DetalleProducto() {
   const { codigo } = useParams();
-  const { productos, agregarAlCarrito } = useTienda();
+  const { productos, categorias, agregarAlCarrito } = useTienda();
   const producto = productos.find((p) => p.codigo === codigo);
   const [cantidad, setCantidad] = useState(1);
   const [mensaje, setMensaje] = useState("");
@@ -24,7 +24,7 @@ export default function DetalleProducto() {
     );
   }
 
-  const categoria = categoriaPorNombre(producto.categoria);
+  const categoria = categorias.find((c) => c.nombre === producto.categoria);
   const relacionados = productos.filter((p) => p.categoria === producto.categoria && p.codigo !== producto.codigo).slice(0, 4);
 
   function agregar() {

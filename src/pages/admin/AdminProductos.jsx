@@ -20,13 +20,16 @@ export function AdminProductos() {
   const { productos, eliminarProducto } = useTienda();
   const puedeEditar = usePuedeEditar();
   const [texto, setTexto] = useState("");
-  const [aviso, setAviso] = useState("");
+  const [aviso, setAviso] = useState(null);
   const filtrados = useMemo(() => filtrarProductos(productos, { texto }), [productos, texto]);
 
-  function eliminar(producto) {
-    if (window.confirm(`¿Eliminar "${producto.nombre}"? Esta acción no se puede deshacer.`)) {
-      eliminarProducto(producto.codigo);
-      setAviso(`Producto "${producto.nombre}" eliminado.`);
+  async function eliminar(producto) {
+    if (!window.confirm(`¿Eliminar "${producto.nombre}"? Esta acción no se puede deshacer.`)) return;
+    try {
+      await eliminarProducto(producto.codigo);
+      setAviso({ tipo: "warning", texto: `Producto "${producto.nombre}" eliminado.` });
+    } catch (error) {
+      setAviso({ tipo: "danger", texto: error.message });
     }
   }
 
@@ -39,7 +42,7 @@ export function AdminProductos() {
           </Link>
         )}
       </EncabezadoAdmin>
-      <Alerta mensaje={aviso} tipo="warning" onCerrar={() => setAviso("")} />
+      <Alerta mensaje={aviso?.texto} tipo={aviso?.tipo} onCerrar={() => setAviso(null)} />
       <div className="card card-body">
         <div className="mb-3">
           <BarraBusqueda valor={texto} onCambiar={setTexto} placeholder="Buscar producto..." />

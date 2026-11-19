@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { useTienda } from "../context/TiendaContext";
-import { CATEGORIAS } from "../data/datos";
 import GrillaProductos from "../components/productos/GrillaProductos";
 import TarjetaCategoria from "../components/productos/TarjetaCategoria";
 import { tieneOferta } from "../utils/formato";
 
 export default function Home() {
-  const { productos, agregarAlCarrito } = useTienda();
+  const { productos, categorias, agregarAlCarrito } = useTienda();
   const ofertas = productos.filter(tieneOferta).slice(0, 4);
 
   return (
@@ -44,7 +43,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 g-3">
-          {CATEGORIAS.map((c) => (
+          {categorias.map((c) => (
             <div className="col" key={c.id}>
               <TarjetaCategoria categoria={c} cantidad={productos.filter((p) => p.categoria === c.nombre).length} />
             </div>

@@ -1,15 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import { useTienda } from "../context/TiendaContext";
-import { CATEGORIAS } from "../data/datos";
 import GrillaProductos from "../components/productos/GrillaProductos";
 import EstadoVacio from "../components/common/EstadoVacio";
-import { categoriaPorId } from "../utils/formato";
 
 /** Productos de una categoría (/categorias/:id) con acceso rápido a las demás. */
 export default function CategoriaDetalle() {
   const { id } = useParams();
-  const { productos, agregarAlCarrito } = useTienda();
-  const categoria = categoriaPorId(id);
+  const { productos, categorias, agregarAlCarrito } = useTienda();
+  const categoria = categorias.find((c) => c.id === id);
 
   if (!categoria) {
     return (
@@ -32,7 +30,7 @@ export default function CategoriaDetalle() {
       <p>{categoria.descripcion}</p>
 
       <div className="d-flex flex-wrap gap-2 mb-4">
-        {CATEGORIAS.map((c) => (
+        {categorias.map((c) => (
           <Link key={c.id} to={`/categorias/${c.id}`} className={`btn btn-sm rounded-pill ${c.id === id ? "btn-glitch" : "btn-outline-secondary"}`}>
             {c.nombre}
           </Link>

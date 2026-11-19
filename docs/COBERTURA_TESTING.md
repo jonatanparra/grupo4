@@ -1,22 +1,26 @@
 # Documento de cobertura del testing — Glitch Store
 
-**Asignatura:** DSY1104 Desarrollo Fullstack II · **Evaluación:** Parcial 2
+**Asignatura:** DSY1104 Desarrollo Fullstack II · **Evaluación:** Parcial 2, actualizado en la Parcial 3 (integración con la API)
 **Herramientas:** Jasmine 5 + Karma 6 (Chrome/Edge headless) + React Testing Library + karma-coverage (istanbul)
 
 ## 1. Resultado
 
 | Indicador            | Valor                |
 |----------------------|----------------------|
-| Pruebas ejecutadas   | **169**              |
-| Pruebas exitosas     | **169 (100%)**       |
-| Archivos de prueba   | 17 (`*.spec.js` / `*.spec.jsx`) |
-| Cobertura de sentencias | **96,35%** (793/823) |
-| Cobertura de ramas   | **90,97%** (514/565) |
-| Cobertura de funciones | **97,04%** (296/305) |
-| Cobertura de líneas  | **97,84%** (680/695) |
+| Pruebas ejecutadas   | **195**              |
+| Pruebas exitosas     | **195 (100%)**       |
+| Archivos de prueba   | 18 (`*.spec.js` / `*.spec.jsx`) |
+| Cobertura de sentencias | **96,8%** (968/1000) |
+| Cobertura de ramas   | **90,95%** (603/663) |
+| Cobertura de funciones | **95,71%** (357/373) |
+| Cobertura de líneas  | **97,64%** (828/848) |
 
 Los números se regeneran con `npm test` (reporte HTML en `coverage/html/index.html`, tabla de texto
-en `coverage/cobertura.txt`). `src/main.jsx` no se mide porque solo monta la aplicación en el DOM real.
+en `coverage/cobertura.txt`) y son idénticos en cada ejecución. `src/main.jsx` no se mide porque solo
+monta la aplicación en el DOM real.
+
+Las pruebas del frontend **no necesitan el backend**: usan una API falsa en memoria (sección 3). El
+backend tiene sus propias 28 pruebas (JUnit, Mockito y MockMvc) en el repositorio `glitch-store-backend`.
 
 ## 2. Configuración del entorno de pruebas
 
@@ -31,26 +35,34 @@ en `coverage/cobertura.txt`). `src/main.jsx` no se mide porque solo monta la apl
   - Reportes: `spec` (consola), `kjhtml` (navegador en modo *watch*) y `coverage`.
 - **`src/test/setup.js`**: un `beforeEach` global limpia `localStorage` antes de cada prueba,
   así ninguna prueba depende de otra.
+- **`src/test/apiFalsa.js`** — `crearApiFalsa({ carrito, sesion, errorCatalogo })`: **mock de la API
+  REST** con la misma forma que `crearApi()` (`src/api/servicios.js`). Guarda los datos en memoria,
+  responde con promesas y reproduce las reglas del backend: 401 con credenciales incorrectas, 403
+  si el rol no tiene permiso, 409 por RUN/correo/código duplicado, y la compra recalculada con
+  control de stock. Expone `api.datos` para comprobar qué quedó "guardado".
+- **`src/test/datosPrueba.js`** — los mismos datos de ejemplo que carga el backend en Oracle.
 - **`src/test/utilidades.jsx`**:
-  - `crearAlmacenamientoFalso()` — **mock** de `localStorage` en memoria.
-  - `crearServiciosPrueba({ carrito, sesion })` — servicios de datos sobre ese mock, con carrito o
-    sesión iniciales.
-  - `renderConTienda(ui, { ruta, patron, servicios })` — renderiza el componente dentro de
-    `MemoryRouter` + `TiendaProvider` y expone la ruta actual (`data-testid="ubicacion"`) para
-    comprobar redirecciones.
+  - `renderConTienda(ui, { ruta, patron, api })` — renderiza el componente dentro de
+    `MemoryRouter` + `TiendaProvider`, **espera a que terminen las peticiones iniciales**
+    (catálogo, sesión y datos del rol) y expone la ruta actual (`data-testid="ubicacion"`).
+  - `esperarQue(condición)` — reintenta hasta que la condición se cumpla. Hace falta porque en
+    Jasmine un `expect` fallido no lanza excepción, y `waitFor(() => expect(...))` no reintentaría.
 
 ## 3. Uso de mocks y espías
 
 | Mock / espía | Dónde | Para qué |
 |--------------|-------|----------|
-| `crearAlmacenamientoFalso()` (reemplaza `localStorage`) | db, contexto, páginas | Aislar la "base de datos" de cada prueba |
-| Inyección de `servicios` en `TiendaProvider` | todas las páginas | Probar componentes con datos controlados (carrito, sesión) |
+| `crearApiFalsa()` inyectada en `TiendaProvider` | contexto, páginas, App | Probar componentes sin red ni Oracle, con datos y sesión controlados |
+| `crearApiFalsa({ sesion: USUARIO_VENDEDOR })` | App, Admin, contexto | Simular cada rol (tokens válidos) y comprobar sus restricciones |
+| `jasmine.createSpy("fetch")` como `fetchImpl` | `api/cliente.spec.js`, `api/servicios.spec.js` | Reemplazar `fetch` para verificar headers JWT, rutas, métodos y la renovación del token |
+| `spyOn(api.boletas, "comprar").and.callThrough()` | contexto, Checkout | Verificar que la compra envía **solo códigos y cantidades** (los montos los calcula el backend) |
+| `spyOn(api.productos, "eliminar").and.returnValue(Promise.reject(...))` | Admin, Checkout | Simular que el backend rechaza la acción y comprobar que la interfaz muestra el error |
+| `spyOn(api.auth, "perfil").and.returnValue(Promise.reject(...))` | RutaProtegida | Simular tokens guardados que el backend ya no acepta |
+| `crearAlmacenamientoFalso()` (reemplaza `localStorage`) | API falsa, almacenamiento | Aislar carrito y tokens de cada prueba |
 | `jasmine.createSpy()` | Boton, TarjetaProducto, FiltroCategorias, LineaCarrito... | Verificar que se llame la función recibida por *props* y con qué argumentos |
 | `jasmine.createSpy().and.returnValue()` | ResumenCarrito | Simular respuesta válida/ inválida del cupón |
 | `spyOn(window, "confirm").and.returnValues(false, true)` | Admin productos/usuarios | Simular que el usuario cancela y luego confirma la eliminación |
 | `spyOn(window, "print")`, `spyOn(window, "scrollTo")` | Boleta, Registro, App | Evitar efectos reales del navegador y verificar que se invocan |
-| `spyOn(almacenamiento, "setItem").and.callThrough()` | db | Verificar que la colección se persiste |
-| `spyOn(console, "error")` | db | Silenciar y verificar el log ante datos corruptos |
 | `jasmine.clock().install()` / `tick()` | TarjetaProducto | Controlar el `setTimeout` del texto "Añadido ✓" sin esperar tiempo real |
 | `jasmine.clock().mockDate()` + `spyOn(Date, "now")` | confetiHalloween | Avanzar los temporizadores del confeti y comprobar que la lluvia de emojis se detiene |
 | `spyOn(window, "AudioContext").and.throwError()` | confetiHalloween | Simular un navegador que bloquea el sonido |
@@ -117,16 +129,40 @@ en `coverage/cobertura.txt`). `src/main.jsx` no se mide porque solo monta la apl
 | RUN (dígito verificador, incluye K), correo, contraseña, números, teléfono | `utils/validaciones.spec.js` |
 | Carrito: agregar, límite de stock, inmutabilidad, cupones, envío, totales | `utils/carrito.spec.js` |
 | Filtros y orden del catálogo, formato CLP, oferta, stock crítico | `utils/filtros.spec.js` |
-| CRUD de la base de datos simulada, errores por id duplicado/inexistente, datos corruptos | `data/db.spec.js` |
-| `procesarCompra`: pagada (descuenta stock, vacía carrito), rechazada, sin stock | `context/TiendaContext.spec.jsx` |
+| `procesarCompra`: pagada (descuenta stock, vacía carrito), rechazada, sin stock en el backend | `context/TiendaContext.spec.jsx` |
 | Confeti de Halloween (bonus): explosiones, fin de la lluvia a los 1,8 s y sonido bloqueado sin errores | `utils/confettiHalloween.spec.js` |
+| Almacenamiento local: la sesión guarda **solo los tokens**; datos corruptos vuelven al valor por defecto | `api/cliente.spec.js` |
+
+### 4.7 Integración con la API REST (EV3)
+| Prueba | Archivo |
+|--------|---------|
+| Cada servicio llama al **método y ruta versionada** correctos (`GET /v1/productos`, `PUT /v1/boletas/{id}/estado`...) | `api/servicios.spec.js` |
+| El cliente HTTP envía `Authorization: Bearer <token>` y serializa el cuerpo en JSON | `api/cliente.spec.js` |
+| Token vencido (401) → se renueva con el refresh token y se repite la petición | `api/cliente.spec.js` |
+| Varias peticiones con el token vencido comparten **una sola** renovación | `api/cliente.spec.js` |
+| Si la renovación falla, se borra la sesión y se avisa a la app | `api/cliente.spec.js`, `context/TiendaContext.spec.jsx` |
+| Errores 400 con campos, 204 sin cuerpo y backend caído se convierten en mensajes claros | `api/cliente.spec.js` |
+| Al recargar con tokens, el usuario y su rol se recuperan desde `/auth/me` | `context/TiendaContext.spec.jsx` |
+| Cada rol carga solo sus datos: Administrador (usuarios + órdenes), Vendedor (órdenes), Cliente (sus compras) | `context/TiendaContext.spec.jsx` |
+| Un 403 del backend no cambia el estado de la interfaz | `context/TiendaContext.spec.jsx` |
+| Backend caído: la tienda muestra "No pudimos cargar la información" y botón Reintentar | `App.spec.jsx` |
+
+### 4.8 Restricciones de acceso por rol (EV3)
+| Prueba | Archivo |
+|--------|---------|
+| `RutaProtegida`: sin sesión → login; rol no permitido → "Acceso denegado"; tokens inválidos → login | `components/layout/Encabezado.spec.jsx` |
+| Vendedor: entra directo a Órdenes y su menú solo tiene **Órdenes y Productos** | `App.spec.jsx` |
+| Vendedor: escribir la URL de Usuarios, Reportes, Stock crítico, Nuevo o Editar producto muestra "Acceso denegado" | `App.spec.jsx` |
+| Vendedor: ve la boleta pero no puede cambiar su estado; no ve botones de edición de productos | `pages/admin/Admin.spec.jsx` |
+| Administrador: ve todas las secciones y cambia el estado de una boleta | `App.spec.jsx`, `pages/admin/Admin.spec.jsx` |
+| "Mis compras" exige sesión y muestra solo las compras del cliente | `App.spec.jsx`, `pages/Tienda.spec.jsx` |
 
 ## 5. Análisis de resultados
 
 - **Todas las pruebas pasan** y la cobertura supera el 90% en sentencias, ramas, funciones y líneas.
-- Las capas con lógica de negocio (`utils`, `data`, `context`, `hooks`) tienen entre 98% y 100% de
-  sentencias cubiertas: son las más críticas porque de ellas dependen los totales de la compra, el
-  stock y las validaciones.
+- Las capas con lógica (`api`, `utils`, `context`, `hooks`) tienen entre 95% y 100% de sentencias
+  cubiertas: de ellas dependen la sesión, la comunicación con el backend, los totales mostrados y
+  las validaciones.
 - Las pruebas ayudaron a detectar errores reales durante el desarrollo:
   1. Dos RUN de los datos de ejemplo tenían el **dígito verificador incorrecto** (`191102203`,
      `178456321`); se corrigieron a `191102207` y `178456326`.
@@ -137,13 +173,21 @@ en `coverage/cobertura.txt`). `src/main.jsx` no se mide porque solo monta la apl
   4. La cobertura variaba entre ejecuciones (95,5% / 96,1%) porque el confeti usaba temporizadores
      reales que a veces alcanzaban a ejecutarse durante otras pruebas. Se agregó
      `confettiHalloween.spec.js` con reloj falso y ahora el resultado es **idéntico en cada ejecución**.
+  5. (EV3) Al entrar directo a `/checkout`, la página redirigía al carrito antes de que llegara el
+     catálogo desde la API, y el formulario no se autocompletaba porque la sesión aún se estaba
+     verificando. Ahora espera ambas cosas antes de mostrarse.
+  6. (EV3) Al cambiar el estado de una boleta, el mensaje de confirmación desaparecía porque el
+     componente se volvía a montar; se corrigió su `key`.
+- **Pruebas manuales contra el backend real** (Oracle Cloud): login de los tres roles, recarga de
+  página con sesión, renovación automática del token (dos peticiones con 401 → una sola llamada a
+  `/auth/refresh`), compra real con descuento de stock y "Mis compras". Ver el documento de
+  integración.
 - **Zonas con menor cobertura** (oportunidades de mejora):
-  - `FormularioProducto.jsx` (~75%): la lectura de la imagen con `FileReader` y el error de
+  - `FormularioProducto.jsx` (~78%): la lectura de la imagen con `FileReader` y el error de
     archivo que no es imagen no se prueban con un archivo real.
   - Ramas de `ResumenOrden`/`AdminReportes` para datos incompletos (dirección vacía, categoría sin
-    ventas) y las ramas por defecto de `servicios.js` (usar el `localStorage` real).
-  - Próximo paso: pruebas de integración contra el backend cuando se reemplace la base de datos
-    simulada por la API real.
+    ventas).
+  - Próximo paso: pruebas end-to-end automatizadas (por ejemplo, Playwright) contra el backend.
 
 ## 6. Cómo ejecutar
 
