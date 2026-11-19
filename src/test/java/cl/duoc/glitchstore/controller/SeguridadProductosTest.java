@@ -103,15 +103,17 @@ class SeguridadProductosTest {
     }
 
     @Test
-    void elClienteNoVeElStockCritico() throws Exception {
+    void elVendedorYElClienteNoVenElStockCritico() throws Exception {
+        mvc.perform(get("/api/v1/productos/stock-critico").header("Authorization", token(Rol.VENDEDOR)))
+                .andExpect(status().isForbidden());
         mvc.perform(get("/api/v1/productos/stock-critico").header("Authorization", token(Rol.CLIENTE)))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    void elVendedorSiVeElStockCritico() throws Exception {
+    void elAdministradorVeElStockCritico() throws Exception {
         when(productos.stockCritico()).thenReturn(List.of());
-        mvc.perform(get("/api/v1/productos/stock-critico").header("Authorization", token(Rol.VENDEDOR)))
+        mvc.perform(get("/api/v1/productos/stock-critico").header("Authorization", token(Rol.ADMINISTRADOR)))
                 .andExpect(status().isOk());
     }
 

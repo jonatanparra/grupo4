@@ -82,7 +82,7 @@ después se edita o elimina el producto o el usuario.
 | POST | `/api/v1/auth/login` · `/registro` · `/refresh` | Público |
 | GET | `/api/v1/auth/me` | Con sesión |
 | GET | `/api/v1/productos` · `/{codigo}` · `/api/v2/productos` · `/{codigo}` | Público |
-| GET | `/api/v1/productos/stock-critico` | Administrador, Vendedor |
+| GET | `/api/v1/productos/stock-critico` | Administrador |
 | POST · PUT · DELETE | `/api/v1/productos` | Administrador |
 | GET | `/api/v1/categorias` · `/{id}` | Público |
 | POST · PUT · DELETE | `/api/v1/categorias` | Administrador |

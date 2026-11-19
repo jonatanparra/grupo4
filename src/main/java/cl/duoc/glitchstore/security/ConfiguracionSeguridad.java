@@ -23,7 +23,8 @@ import java.util.List;
 /**
  * Reglas de acceso por rol (Anexo 1):
  * - Público: catálogo (productos y categorías), login, registro, renovar token y comprar.
- * - Vendedor: además puede ver la lista y el detalle de productos y órdenes (solo lectura).
+ * - Vendedor: además puede ver la lista y el detalle de órdenes (solo lectura); los productos
+ *   los lee desde el catálogo público.
  * - Administrador: acceso total (CRUD de productos, categorías, usuarios y boletas).
  * La API es stateless: no hay sesión en el servidor, cada petición trae su JWT.
  */
@@ -46,8 +47,8 @@ public class ConfiguracionSeguridad {
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         // Autenticación
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login", "/api/v1/auth/registro", "/api/v1/auth/refresh").permitAll()
-                        // Stock crítico: antes del catálogo público, porque "/productos/{codigo}" también lo captura
-                        .requestMatchers(HttpMethod.GET, "/api/v1/productos/stock-critico").hasAnyRole(ADMIN, VENDEDOR)
+                        // Stock crítico (solo Administrador): antes del catálogo público, porque "/productos/{codigo}" también lo captura
+                        .requestMatchers(HttpMethod.GET, "/api/v1/productos/stock-critico").hasRole(ADMIN)
                         // Catálogo público
                         .requestMatchers(HttpMethod.GET, "/api/v1/productos", "/api/v1/productos/{codigo}",
                                 "/api/v2/productos", "/api/v2/productos/{codigo}",

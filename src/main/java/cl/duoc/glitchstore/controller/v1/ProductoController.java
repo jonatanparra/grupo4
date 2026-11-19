@@ -49,7 +49,7 @@ public class ProductoController {
 
     @GetMapping("/stock-critico")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Productos con stock crítico", description = "Administrador o Vendedor.")
+    @Operation(summary = "Productos con stock crítico", description = "Solo Administrador.")
     @ApiResponse(responseCode = "200", description = "Productos con stock en o bajo su nivel crítico")
     @ApiResponse(responseCode = "403", description = "Rol sin permiso", content = @Content(schema = @Schema(implementation = ErrorDTO.class)))
     public List<ProductoDTO> stockCritico() {
