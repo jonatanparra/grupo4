@@ -1,12 +1,10 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
-# Credenciales locales: nunca se versionan
+# Contraseña de la BD y secreto JWT: nunca se versionan.
+# (El Wallet de Oracle en wallet/ SÍ se versiona por decisión del equipo:
+#  revisar antes de publicar el repositorio en GitHub.)
 application-local.properties
-Wallet_*/
-*.sso
-*.p12
-*.jks
 
 .idea/
 *.iml

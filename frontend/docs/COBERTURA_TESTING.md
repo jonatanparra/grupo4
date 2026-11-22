@@ -20,7 +20,7 @@ en `coverage/cobertura.txt`) y son idénticos en cada ejecución. `src/main.jsx`
 monta la aplicación en el DOM real.
 
 Las pruebas del frontend **no necesitan el backend**: usan una API falsa en memoria (sección 3). El
-backend tiene sus propias 28 pruebas (JUnit, Mockito y MockMvc) en el repositorio `glitch-store-backend`.
+backend tiene sus propias 28 pruebas (JUnit, Mockito y MockMvc) en la carpeta `backend/`.
 
 ## 2. Configuración del entorno de pruebas
 

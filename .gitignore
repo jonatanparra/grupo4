@@ -1,0 +1,6 @@
+# Cada proyecto tiene su propio .gitignore (frontend/ y backend/).
+# Restos de la estructura anterior (antes de separar frontend/ y backend/):
+/node_modules/
+/coverage/
+/dist/
+/.vite/

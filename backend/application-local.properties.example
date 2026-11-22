@@ -2,8 +2,8 @@
 # y completar con los datos reales. También se pueden usar variables de entorno
 # con el mismo nombre en mayúsculas (DB_WALLET, DB_PASSWORD, JWT_SECRET).
 
-# Carpeta del Wallet descomprimido (usar / en Windows)
-DB_WALLET=C:/ruta/al/Wallet_DATABASE2026
+# Carpeta del Wallet (opcional: por defecto se usa wallet/Wallet_DATABASE2026; usar / en Windows)
+DB_WALLET=C:/dev/Fullstack/grupo4/backend/wallet/Wallet_DATABASE2026
 DB_SERVICE=database2026_high
 DB_USER=GLITCH_STORE
 DB_PASSWORD=cambiar

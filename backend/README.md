@@ -17,12 +17,12 @@ DSY1104 — Desarrollo Fullstack II, Duoc UC. El frontend React (EV2) consume es
 
 ## Configuración
 
-1. Descomprimir el **Wallet** de Oracle Cloud en una carpeta local (no se versiona).
+1. El **Wallet** de Oracle Cloud está en `backend/wallet/Wallet_DATABASE2026` (se usa por defecto).
 2. Copiar `application-local.properties.example` como `application-local.properties` y completar:
 
    | Variable | Ejemplo |
    |---|---|
-   | `DB_WALLET` | `C:/dev/Fullstack/wallet/Wallet_DATABASE2026` |
+   | `DB_WALLET` | opcional; por defecto `wallet/Wallet_DATABASE2026` |
    | `DB_SERVICE` | `database2026_high` |
    | `DB_USER` / `DB_PASSWORD` | `GLITCH_STORE` / *(contraseña del usuario)* |
    | `JWT_SECRET` | secreto en Base64 de 32 bytes o más |

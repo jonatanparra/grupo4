@@ -5,14 +5,13 @@ Proyecto frontend de DSY1104 — Desarrollo Fullstack II, Duoc UC.
 - **Evaluación 1:** tienda en HTML, CSS y JavaScript sin frameworks (quedó en el historial de git).
 - **Evaluación 2:** migración a **React** con **Bootstrap 5**, nuevas vistas y **pruebas unitarias con
   Jasmine + Karma**.
-- **Evaluación 3 (40%):** el frontend se **integra con el backend Spring Boot** (repositorio
-  `glitch-store-backend`) mediante su **API REST**. Los productos, categorías, usuarios y boletas viven
+- **Evaluación 3 (40%):** el frontend se **integra con el backend Spring Boot** (carpeta `../backend`) mediante su **API REST**. Los productos, categorías, usuarios y boletas viven
   en **Oracle Cloud**; la sesión usa **JWT** y la interfaz se restringe según el rol.
 
 ## Requisitos
 
 - Node.js 18 o superior (probado con Node 24 LTS).
-- El **backend** en ejecución en <http://localhost:8080> (ver su README).
+- El **backend** en ejecución en <http://localhost:8080> (ver `../backend/README.md`).
 - Google Chrome o Microsoft Edge para las pruebas (Karma las ejecuta en modo *headless*; si no
   encuentra Chrome usa Edge automáticamente).
 
@@ -20,7 +19,7 @@ Proyecto frontend de DSY1104 — Desarrollo Fullstack II, Duoc UC.
 
 ```bash
 git clone https://github.com/jonatanparra/grupo4.git
-cd grupo4
+cd grupo4/frontend
 npm install
 npm run dev        # servidor de desarrollo en http://localhost:5173 (el backend debe estar arriba)
 npm run build      # build de producción en dist/
@@ -63,7 +62,7 @@ Cupones de descuento: `GLITCH10` (10%) y `DUOC15` (15%).
 ## Estructura del proyecto
 
 ```
-grupo4/
+frontend/
 ├── index.html                 Punto de entrada de Vite
 ├── package.json               Dependencias y scripts (dev, build, preview, test)
 ├── vite.config.js             Configuración de Vite (plugin React, puerto 5173)
