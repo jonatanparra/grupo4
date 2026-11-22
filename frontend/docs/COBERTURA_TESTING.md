@@ -7,13 +7,13 @@
 
 | Indicador            | Valor                |
 |----------------------|----------------------|
-| Pruebas ejecutadas   | **195**              |
-| Pruebas exitosas     | **195 (100%)**       |
-| Archivos de prueba   | 18 (`*.spec.js` / `*.spec.jsx`) |
-| Cobertura de sentencias | **96,8%** (968/1000) |
-| Cobertura de ramas   | **90,95%** (603/663) |
-| Cobertura de funciones | **95,71%** (357/373) |
-| Cobertura de líneas  | **97,64%** (828/848) |
+| Pruebas ejecutadas   | **215**              |
+| Pruebas exitosas     | **215 (100%)**       |
+| Archivos de prueba   | 20 (`*.spec.js` / `*.spec.jsx`) |
+| Cobertura de sentencias | **97,01%** (1172/1208) |
+| Cobertura de ramas   | **90,96%** (715/786) |
+| Cobertura de funciones | **95,8%** (434/453) |
+| Cobertura de líneas  | **97,83%** (994/1016) |
 
 Los números se regeneran con `npm test` (reporte HTML en `coverage/html/index.html`, tabla de texto
 en `coverage/cobertura.txt`) y son idénticos en cada ejecución. `src/main.jsx` no se mide porque solo
@@ -147,7 +147,15 @@ backend tiene sus propias 28 pruebas (JUnit, Mockito y MockMvc) en la carpeta `b
 | Un 403 del backend no cambia el estado de la interfaz | `context/TiendaContext.spec.jsx` |
 | Backend caído: la tienda muestra "No pudimos cargar la información" y botón Reintentar | `App.spec.jsx` |
 
-### 4.8 Restricciones de acceso por rol (EV3)
+### 4.8 Gráficos del dashboard
+| Prueba | Archivo |
+|--------|---------|
+| Ventas por día/semana con todos los días del período; anuladas y rechazadas no cuentan como venta | `utils/estadisticas.spec.js` |
+| Ingresos por categoría, órdenes por estado (orden fijo) y productos ordenados por urgencia de reposición | `utils/estadisticas.spec.js` |
+| Ventas en el tiempo: el filtro 7/30/90 días cambia el resumen; el cursor muestra el detalle del día | `components/admin/graficos/Graficos.spec.jsx` |
+| Categorías, estados y stock: una marca por dato, globo al pasar el cursor, leyenda con cantidad y % y mensaje cuando no hay datos | `components/admin/graficos/Graficos.spec.jsx` |
+
+### 4.9 Restricciones de acceso por rol (EV3)
 | Prueba | Archivo |
 |--------|---------|
 | `RutaProtegida`: sin sesión → login; rol no permitido → "Acceso denegado"; tokens inválidos → login | `components/layout/Encabezado.spec.jsx` |

@@ -130,7 +130,7 @@ Cada archivo `*.spec.js(x)` está junto al código que prueba.
 
 | Ruta                               | Vista                                         | Administrador | Vendedor |
 |------------------------------------|-----------------------------------------------|:---:|:---:|
-| `/admin`                           | Dashboard: ventas, productos, usuarios, stock crítico | ✓ | → Órdenes |
+| `/admin`                           | Dashboard: indicadores y 4 gráficos (ventas en el tiempo, estado de las órdenes, ingresos por categoría, stock frente a nivel crítico) | ✓ | → Órdenes |
 | `/admin/ordenes`, `/admin/ordenes/:id` | Órdenes / boletas, filtro por estado; cambio de estado solo Administrador | ✓ | ✓ (solo lectura) |
 | `/admin/productos`, `/admin/productos/:codigo` | Listado con búsqueda y ficha del producto | ✓ | ✓ (solo lectura) |
 | `/admin/productos/nuevo`, `/:codigo/editar` | Crear y editar productos           | ✓ | — |
@@ -202,3 +202,21 @@ Se validan en el formulario (al escribir y al enviar) y **otra vez en el backend
 - **Correo**: formato válido y dominios `@duoc.cl`, `@profesor.duoc.cl`, `@gmail.com`.
 - **Contraseña**: 4 a 10 caracteres, con confirmación.
 - **Productos**: código mínimo 3 caracteres y único; precio ≥ 0; descuento 0–90%; stock entero ≥ 0.
+
+## Gráficos del dashboard
+
+El dashboard del Administrador tiene cuatro gráficos, cada uno con una forma distinta según la
+pregunta que responde. Se dibujan con SVG propio (sin librerías) en `src/components/admin/graficos/`
+y sus cálculos son funciones puras en `src/utils/estadisticas.js`.
+
+| Gráfico | Forma | Responde |
+|---|---|---|
+| Ventas en el tiempo | Línea con área, filtro 7 / 30 / 90 días (90 días agrupa por semana) | ¿Cómo evolucionan los ingresos? |
+| Estado de las órdenes | Barra segmentada al 100% | ¿Qué parte de las órdenes termina en venta, y cuántas se rechazan o anulan? |
+| Ingresos por categoría | Barras horizontales, de mayor a menor | ¿Qué género vende más? |
+| Stock frente a nivel crítico | Gráfico de viñeta (barra = stock, marca = nivel crítico) | ¿Qué productos hay que reponer primero? |
+
+Todos muestran el detalle al pasar el cursor y tienen una tabla con los mismos datos ("Ver datos en
+tabla"). Los colores se validaron contra la superficie de las tarjetas (contraste ≥ 3:1 y estados
+distinguibles con daltonismo); el estado y la alerta de stock nunca dependen solo del color: van con
+nombre, cantidad o el ícono ⚠.

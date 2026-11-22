@@ -2,12 +2,16 @@ import { Link } from "react-router-dom";
 import { useTienda } from "../../context/TiendaContext";
 import EncabezadoAdmin from "../../components/admin/EncabezadoAdmin";
 import TarjetaEstadistica from "../../components/admin/TarjetaEstadistica";
-import TablaProductos from "../../components/admin/TablaProductos";
 import TablaOrdenes from "../../components/admin/TablaOrdenes";
+import GraficoVentas from "../../components/admin/graficos/GraficoVentas";
+import GraficoEstados from "../../components/admin/graficos/GraficoEstados";
+import GraficoCategorias from "../../components/admin/graficos/GraficoCategorias";
+import GraficoStock from "../../components/admin/graficos/GraficoStock";
 import { esStockCritico, esVentaConcretada, formatoCLP } from "../../utils/formato";
 
-export default function AdminDashboard() {
-  const { productos, usuarios, ordenes, usuarioActual } = useTienda();
+/** Dashboard del Administrador: indicadores, 4 gráficos y últimas órdenes. */
+export default function AdminDashboard({ hoy }) {
+  const { productos, categorias, usuarios, ordenes, usuarioActual } = useTienda();
   const pagadas = ordenes.filter(esVentaConcretada);
   const ventas = pagadas.reduce((total, o) => total + o.total, 0);
   const criticos = productos.filter(esStockCritico);
@@ -32,26 +36,28 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="row g-4">
-        <div className="col-xl-6">
-          <section className="card card-body h-100">
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <h2 className="h5 mb-0">Stock crítico</h2>
-              <Link to="/admin/productos-criticos" className="small link-danger">Ver todos</Link>
-            </div>
-            <TablaProductos productos={criticos} puedeEditar={false} />
-          </section>
+      <div className="row g-4 mb-4">
+        <div className="col-xl-8">
+          <GraficoVentas ordenes={ordenes} hoy={hoy} />
+        </div>
+        <div className="col-xl-4">
+          <GraficoEstados ordenes={ordenes} />
         </div>
         <div className="col-xl-6">
-          <section className="card card-body h-100">
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <h2 className="h5 mb-0">Últimas órdenes</h2>
-              <Link to="/admin/ordenes" className="small link-danger">Ver todas</Link>
-            </div>
-            <TablaOrdenes ordenes={ultimas} />
-          </section>
+          <GraficoCategorias ordenes={ordenes} productos={productos} categorias={categorias} />
+        </div>
+        <div className="col-xl-6">
+          <GraficoStock productos={productos} />
         </div>
       </div>
+
+      <section className="card card-body">
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h2 className="h5 mb-0">Últimas órdenes</h2>
+          <Link to="/admin/ordenes" className="small link-danger">Ver todas</Link>
+        </div>
+        <TablaOrdenes ordenes={ultimas} />
+      </section>
     </>
   );
 }

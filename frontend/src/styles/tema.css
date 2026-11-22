@@ -663,3 +663,85 @@ a {
   .encabezado, .pie, .admin-sidebar, .btn { display: none !important; }
   body, .card { background: #fff !important; color: #000 !important; }
 }
+/* =========================================================
+   Gráficos del dashboard
+   Colores validados contra la superficie de las tarjetas (#1b0a20):
+   contraste >= 3:1 y estados distinguibles con daltonismo (ΔE >= 8).
+   ========================================================= */
+.grafico {
+  --grafico-texto: var(--gs-fantasma);
+  --grafico-texto-suave: var(--gs-texto-suave);
+  --grafico-grilla: rgba(184, 107, 255, 0.18);
+  --grafico-eje: rgba(184, 107, 255, 0.45);
+  --grafico-superficie: var(--gs-morado-oscuro);
+  --grafico-serie: var(--gs-naranja);        /* ventas en el tiempo */
+  --grafico-barra: var(--gs-lila);           /* ingresos por categoría */
+  --grafico-neutro: #8a8590;                 /* stock sin alerta */
+  --grafico-advertencia: #fab219;            /* stock en nivel crítico */
+  --estado-pagado: #3987e5;
+  --estado-enviado: #199e70;
+  --estado-entregado: #9085e9;
+  --estado-rechazado: #e66767;
+  --estado-anulado: #8a8590;
+  position: relative;
+}
+
+.grafico svg {
+  display: block;
+  overflow: visible;
+}
+
+.grafico svg text {
+  fill: var(--grafico-texto-suave);
+  font-size: 12px;
+}
+
+.grafico-area {
+  position: relative;
+}
+
+.grafico-tooltip {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 10px));
+  white-space: nowrap;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--grafico-eje);
+  border-radius: 0.5rem;
+  background: var(--gs-negro);
+  color: var(--grafico-texto);
+  font-size: 0.8rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.grafico-tooltip strong {
+  display: block;
+}
+
+.grafico-leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+}
+
+.grafico-leyenda__muestra {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-right: 0.4rem;
+  border-radius: 3px;
+  vertical-align: -1px;
+}
+
+.grafico-vacio {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  color: var(--grafico-texto-suave);
+  font-size: 0.9rem;
+}

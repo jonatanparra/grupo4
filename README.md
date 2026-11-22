@@ -45,7 +45,7 @@ grupo4/
 ### Pruebas
 
 ```bash
-cd frontend && npm test      # 195 pruebas Jasmine + Karma, con reporte de cobertura
+cd frontend && npm test      # 215 pruebas Jasmine + Karma, con reporte de cobertura
 cd backend && mvnw.cmd test  # 28 pruebas JUnit + Mockito + MockMvc
 ```
 
