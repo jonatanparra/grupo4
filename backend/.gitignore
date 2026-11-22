@@ -1,0 +1,14 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Credenciales locales: nunca se versionan
+application-local.properties
+Wallet_*/
+*.sso
+*.p12
+*.jks
+
+.idea/
+*.iml
+.vscode/
+*.log
