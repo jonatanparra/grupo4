@@ -21,15 +21,14 @@ grupo4/
 **Requisitos:** Node.js 18+, Java 17 (sirve el JDK que trae SQL Developer) y el usuario
 `GLITCH_STORE` creado en Oracle Cloud.
 
-1. **Backend** (primero). Crear `backend/application-local.properties` a partir del ejemplo
-   (contraseña de la BD y secreto JWT) y ejecutar:
+1. **Backend** (primero). En Windows, doble clic en `backend\iniciar-backend.cmd`. El script:
+   - busca Java 17 solo (JAVA_HOME, PATH, el JDK que trae SQL Developer o un JDK instalado);
+   - si falta `backend/application-local.properties` (no se sube a GitHub), pide la contraseña
+     de `GLITCH_STORE` y lo crea, generando el secreto JWT;
+   - revisa el Wallet y que el puerto 8080 esté libre, y si algo falla deja la ventana abierta
+     con el motivo. Con `iniciar-backend.cmd --verificar` solo revisa, sin iniciar.
 
-   ```bash
-   cd backend
-   mvnw.cmd spring-boot:run
-   ```
-
-   En Windows también sirve `backend\iniciar-backend.cmd`. Swagger queda en
+   La primera vez Maven descarga dependencias (requiere Internet). Swagger queda en
    <http://localhost:8080/swagger-ui.html>.
 
 2. **Frontend**:

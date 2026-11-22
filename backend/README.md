@@ -36,8 +36,10 @@ DSY1104 — Desarrollo Fullstack II, Duoc UC. El frontend React (EV2) consume es
 mvnw.cmd spring-boot:run
 ```
 
-En Windows también se puede usar `iniciar-backend.cmd`: si `JAVA_HOME` no está definido, usa el JDK 17
-que trae SQL Developer.
+En Windows también se puede usar `iniciar-backend.cmd` (doble clic). Busca un JDK 17 (JAVA_HOME, PATH,
+el que trae SQL Developer o uno instalado), crea `application-local.properties` pidiendo la contraseña
+si no existe, revisa el Wallet y el puerto 8080, y si algo falla deja la ventana abierta con el motivo.
+`iniciar-backend.cmd --verificar` solo revisa, sin iniciar.
 
 - API: <http://localhost:8080/api/v1>
 - Swagger: <http://localhost:8080/swagger-ui.html>
