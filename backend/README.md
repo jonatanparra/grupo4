@@ -39,7 +39,8 @@ mvnw.cmd spring-boot:run
 En Windows también se puede usar `iniciar-backend.cmd` (doble clic). Busca un JDK 17 (JAVA_HOME, PATH,
 el que trae SQL Developer o uno instalado), crea `application-local.properties` pidiendo la contraseña
 si no existe, revisa el Wallet y el puerto 8080, y si algo falla deja la ventana abierta con el motivo.
-`iniciar-backend.cmd --verificar` solo revisa, sin iniciar.
+`iniciar-backend.cmd --verificar` solo revisa, sin iniciar, y `iniciar-backend.cmd --configurar` vuelve a
+pedir la contraseña (por ejemplo, si Oracle responde `ORA-01017 invalid username/password`).
 
 - API: <http://localhost:8080/api/v1>
 - Swagger: <http://localhost:8080/swagger-ui.html>

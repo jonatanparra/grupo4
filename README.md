@@ -27,6 +27,8 @@ grupo4/
      de `GLITCH_STORE` y lo crea, generando el secreto JWT;
    - revisa el Wallet y que el puerto 8080 esté libre, y si algo falla deja la ventana abierta
      con el motivo. Con `iniciar-backend.cmd --verificar` solo revisa, sin iniciar.
+   - si Oracle responde `ORA-01017` (contraseña incorrecta), ejecutar
+     `iniciar-backend.cmd --configurar` para volver a escribir la contraseña.
 
    La primera vez Maven descarga dependencias (requiere Internet). Swagger queda en
    <http://localhost:8080/swagger-ui.html>.

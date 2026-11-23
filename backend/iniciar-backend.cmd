@@ -10,8 +10,9 @@ rem    2. application-local.properties (si no existe, lo crea pidiendo la clave)
 rem    3. El Wallet de Oracle en wallet\Wallet_DATABASE2026
 rem    4. Que el puerto 8080 este libre
 rem
-rem  Uso:  iniciar-backend.cmd             revisa e inicia
+rem  Uso:  iniciar-backend.cmd              revisa e inicia
 rem        iniciar-backend.cmd --verificar  solo revisa (no inicia)
+rem        iniciar-backend.cmd --configurar vuelve a pedir la contrasena de la BD y luego inicia
 rem =====================================================================
 cd /d "%~dp0"
 title Glitch Store - Backend
@@ -37,6 +38,11 @@ if not exist "!JAVA_HOME!\bin\javac.exe" (
 echo  [OK] Java !VERSION_JAVA!  ^(!JAVA_HOME!^)
 
 rem ---------- 2. Configuracion local ----------
+rem --configurar: vuelve a pedir la contrasena (por ejemplo, si Oracle responde ORA-01017)
+if /i "%~1"=="--configurar" (
+    call :crearConfiguracion || goto :fallo
+    goto :wallet
+)
 if exist "application-local.properties" (
     echo  [OK] application-local.properties
     goto :wallet
@@ -81,8 +87,27 @@ echo  Iniciando... la primera vez Maven descarga dependencias desde Internet ^(p
 echo  Para detener el backend presiona Ctrl+C.
 echo.
 call "%~dp0mvnw.cmd" -q spring-boot:run
-if errorlevel 1 goto :fallo
+if errorlevel 1 goto :falloArranque
 goto :fin
+
+:falloArranque
+echo.
+echo  ---------------------------------------------------------------------
+echo  El backend se detuvo con error. Causas mas comunes ^(busca el codigo arriba^):
+echo.
+echo   ORA-01017 invalid username/password
+echo       La contrasena guardada en application-local.properties es incorrecta.
+echo       Ejecuta:  iniciar-backend.cmd --configurar   y escribe la contrasena correcta.
+echo       Ojo: varios intentos fallidos seguidos pueden bloquear al usuario ^(ORA-28000^).
+echo.
+echo   ORA-28000 the account is locked
+echo       El usuario GLITCH_STORE quedo bloqueado. Desbloquealo en SQL Developer como ADMIN:
+echo       ALTER USER GLITCH_STORE ACCOUNT UNLOCK;
+echo.
+echo   ORA-12506 / ORA-12541 / timeout al conectar
+echo       La base de datos de Oracle Cloud esta detenida o no hay conexion a Internet.
+echo  ---------------------------------------------------------------------
+goto :fallo
 
 rem =====================================================================
 rem  Busqueda de un JDK 17+. Deja el resultado en JAVA_HOME.
@@ -119,11 +144,23 @@ rem =====================================================================
 rem  Crea application-local.properties pidiendo la clave de la BD.
 rem =====================================================================
 :crearConfiguracion
-echo  [AVISO] No existe application-local.properties ^(no se sube a GitHub porque tiene la clave^).
-echo      Se creara ahora. El secreto JWT se genera automaticamente.
+if exist "application-local.properties" (
+    echo  [AVISO] Se reemplazara la contrasena guardada en application-local.properties.
+) else (
+    echo  [AVISO] No existe application-local.properties ^(no se sube a GitHub porque tiene la clave^).
+)
+echo      Escribe la misma contrasena con que GLITCH_STORE entra en SQL Developer
+echo      ^(distingue mayusculas y minusculas^). El secreto JWT se genera automaticamente.
 echo.
 set "CLAVE_BD="
 set /p "CLAVE_BD=     Contrasena del usuario GLITCH_STORE en Oracle: "
+rem quita espacios al inicio y al final (errores tipicos al copiar y pegar)
+if defined CLAVE_BD for /f "tokens=* delims= " %%c in ("!CLAVE_BD!") do set "CLAVE_BD=%%c"
+:recortarFinal
+if defined CLAVE_BD if "!CLAVE_BD:~-1!"==" " (
+    set "CLAVE_BD=!CLAVE_BD:~0,-1!"
+    goto :recortarFinal
+)
 if not defined CLAVE_BD (
     echo  [ERROR] La contrasena no puede quedar vacia.
     exit /b 1
