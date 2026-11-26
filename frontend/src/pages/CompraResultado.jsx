@@ -5,7 +5,7 @@ import ResumenOrden from "../components/carrito/ResumenOrden";
 import EstadoVacio from "../components/common/EstadoVacio";
 import Boton from "../components/common/Boton";
 import Cargando from "../components/common/Cargando";
-import { confetiHalloween } from "../utils/confettiHalloween"; // nuevo import
+import { confetiNavidad } from "../utils/confettiNavidad"; // nuevo import
 
 /**
  * Resultado de una compra. Se usa en dos rutas:
@@ -31,7 +31,7 @@ export default function CompraResultado({ exito }) {
 
   // nuevo: disparo el confeti una sola vez cuando la compra fue exitosa
   useEffect(() => {
-    if (exito && orden) confetiHalloween();
+    if (exito && orden) confetiNavidad();
   }, [exito, orden?.id]);
 
   if (carga.cargando) return <Cargando mensaje="Cargando la boleta..." />;

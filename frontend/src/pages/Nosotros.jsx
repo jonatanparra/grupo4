@@ -8,8 +8,8 @@ export default function Nosotros() {
   return (
     <div className="container py-5">
       <div className="row g-5 align-items-start">
-        <div className="col-md-6">
-          <img src="/img/nosotros.png" alt="Equipo de Glitch Store" className="img-fluid rounded" />
+        <div className="col-md-6 d-flex justify-content-center">
+          <img src="/img/nosotros.png" alt="Equipo de Glitch Store" className="img-fluid rounded nosotros__imagen" />
         </div>
         <div className="col-md-6">
           <h1>Detrás de Glitch Store</h1>

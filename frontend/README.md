@@ -57,7 +57,7 @@ Cupones de descuento: `GLITCH10` (10%) y `DUOC15` (15%).
 | React Testing Library           | Renderizar componentes y simular eventos dentro de Jasmine |
 | karma-webpack + Babel           | Compilar JSX para las pruebas                              |
 | karma-coverage (istanbul)       | Reporte de cobertura                                       |
-| canvas-confetti                 | Bonus: confeti de Halloween al confirmar una compra        |
+| canvas-confetti                 | Bonus: confeti de Navidad al confirmar una compra        |
 
 ## Estructura del proyecto
 
@@ -87,7 +87,7 @@ frontend/
     │   └── TiendaContext.jsx  Estado global: conecta la API con los componentes
     ├── hooks/
     │   └── useFormulario.js   Estado + validación en vivo de formularios
-    ├── utils/                 Lógica pura (validaciones, carrito, filtros, formato) y confettiHalloween.js (bonus)
+    ├── utils/                 Lógica pura (validaciones, carrito, filtros, formato) y confettiNavidad.js (bonus)
     ├── components/
     │   ├── common/            Boton, CampoFormulario, Alerta, Cargando, ErrorConexion, RutaProtegida...
     │   ├── productos/         TarjetaProducto, GrillaProductos, FiltroCategorias, BarraBusqueda...
@@ -120,7 +120,7 @@ Cada archivo `*.spec.js(x)` está junto al código que prueba.
 | `/ofertas`               | Productos con descuento                                     |
 | `/carrito`               | Carrito con cupón de descuento                              |
 | `/checkout`              | Datos del cliente, dirección y tipo de entrega (se completan solos si hay sesión) |
-| `/compra/exito/:id`      | Compra exitosa con boleta (imprimir / enviar) y confeti de Halloween 🎃 |
+| `/compra/exito/:id`      | Compra exitosa con boleta (imprimir / enviar) y confeti de Navidad 🎄 |
 | `/compra/error/:id`      | Pago rechazado, con opción de reintentar                    |
 | `/login`, `/registro`    | Formularios con validación (el registro deja la sesión iniciada) |
 | `/mis-compras`           | **EV3**: historial de compras del usuario (requiere sesión) |
@@ -184,13 +184,13 @@ su rol no permite, ve **"Acceso denegado"**; sin sesión se le envía al login.
   región → comuna, validación en vivo, simulación de pago rechazado, confirmación al eliminar.
 - **Pruebas**: ver [`docs/COBERTURA_TESTING.md`](docs/COBERTURA_TESTING.md).
 
-## Bonus: confeti y sonido de Halloween
+## Bonus: confeti y sonido de Navidad
 
 Al completar una compra con éxito (`/compra/exito/:id`) se lanza una animación de confeti con
-emojis de Halloween (🎃 👻 🦇) y un sonido corto generado con la Web Audio API.
+emojis de Navidad (🎄 ⛄ ❄️ 🎁) y un sonido corto generado con la Web Audio API.
 
 - Librería: [`canvas-confetti`](https://www.npmjs.com/package/canvas-confetti).
-- Lógica en `src/utils/confettiHalloween.js`; se dispara desde `CompraResultado.jsx` con un
+- Lógica en `src/utils/confettiNavidad.js`; se dispara desde `CompraResultado.jsx` con un
   `useEffect` que se ejecuta una sola vez cuando la compra es exitosa.
 - No se muestra en el pago rechazado (`/compra/error/:id`).
 

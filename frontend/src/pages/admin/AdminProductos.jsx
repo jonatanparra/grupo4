@@ -118,8 +118,8 @@ export function AdminProductoMostrar() {
       </EncabezadoAdmin>
       <div className="card card-body">
         <div className="row g-4">
-          <div className="col-sm-4 col-lg-3">
-            <img src={producto.imagen} alt={producto.nombre} className="img-fluid rounded" />
+          <div className="col-sm-4 col-lg-3 d-flex align-items-start justify-content-center">
+            <img src={producto.imagen} alt={producto.nombre} className="img-fluid rounded admin-producto__imagen" />
           </div>
           <div className="col-sm-8 col-lg-9">
             <h2 className="h3">{producto.nombre}</h2>

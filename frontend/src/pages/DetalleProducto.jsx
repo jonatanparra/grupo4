@@ -47,7 +47,7 @@ export default function DetalleProducto() {
 
       <div className="row g-5">
         <div className="col-md-6">
-          <div className="detalle-producto__galeria rounded p-4 d-flex justify-content-center">
+          <div className="detalle-producto__galeria rounded p-3 p-md-4 d-flex align-items-center justify-content-center">
             <img src={producto.imagen} alt={producto.nombre} className="img-fluid" />
           </div>
         </div>

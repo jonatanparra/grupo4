@@ -28,7 +28,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-6 order-first order-lg-last">
+            <div className="col-lg-6 order-first order-lg-last d-flex justify-content-center">
               <img src="/img/logo-index.jpeg" alt="Ilustración de Glitch Store" className="img-fluid rounded hero__imagen" />
             </div>
           </div>

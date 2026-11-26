@@ -10,9 +10,9 @@ export default function Blogs() {
       <div className="d-grid gap-4 mt-4">
         {BLOGS.map((blog) => (
           <article key={blog.id} className="card overflow-hidden">
-            <div className="row g-0">
-              <div className="col-md-5">
-                <img src={blog.imagen} alt="" className="img-fluid h-100 w-100 object-fit-cover tarjeta-blog__imagen" />
+            <div className="row g-0 align-items-center">
+              <div className="col-md-5 tarjeta-blog__contenedor-imagen">
+                <img src={blog.imagen} alt={blog.titulo} className="img-fluid tarjeta-blog__imagen" />
               </div>
               <div className="col-md-7">
                 <div className="card-body p-4 d-flex flex-column h-100">

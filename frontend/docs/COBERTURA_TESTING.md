@@ -64,8 +64,8 @@ backend tiene sus propias 28 pruebas (JUnit, Mockito y MockMvc) en la carpeta `b
 | `spyOn(window, "confirm").and.returnValues(false, true)` | Admin productos/usuarios | Simular que el usuario cancela y luego confirma la eliminación |
 | `spyOn(window, "print")`, `spyOn(window, "scrollTo")` | Boleta, Registro, App | Evitar efectos reales del navegador y verificar que se invocan |
 | `jasmine.clock().install()` / `tick()` | TarjetaProducto | Controlar el `setTimeout` del texto "Añadido ✓" sin esperar tiempo real |
-| `jasmine.clock().mockDate()` + `spyOn(Date, "now")` | confetiHalloween | Avanzar los temporizadores del confeti y comprobar que la lluvia de emojis se detiene |
-| `spyOn(window, "AudioContext").and.throwError()` | confetiHalloween | Simular un navegador que bloquea el sonido |
+| `jasmine.clock().mockDate()` + `spyOn(Date, "now")` | confetiNavidad | Avanzar los temporizadores del confeti y comprobar que la lluvia de emojis se detiene |
+| `spyOn(window, "AudioContext").and.throwError()` | confetiNavidad | Simular un navegador que bloquea el sonido |
 
 ## 4. Alcance por tipo de prueba (propuesta del docente)
 
@@ -130,7 +130,7 @@ backend tiene sus propias 28 pruebas (JUnit, Mockito y MockMvc) en la carpeta `b
 | Carrito: agregar, límite de stock, inmutabilidad, cupones, envío, totales | `utils/carrito.spec.js` |
 | Filtros y orden del catálogo, formato CLP, oferta, stock crítico | `utils/filtros.spec.js` |
 | `procesarCompra`: pagada (descuenta stock, vacía carrito), rechazada, sin stock en el backend | `context/TiendaContext.spec.jsx` |
-| Confeti de Halloween (bonus): explosiones, fin de la lluvia a los 1,8 s y sonido bloqueado sin errores | `utils/confettiHalloween.spec.js` |
+| Confeti de Navidad (bonus): explosiones, fin de la lluvia a los 1,8 s y sonido bloqueado sin errores | `utils/confettiNavidad.spec.js` |
 | Almacenamiento local: la sesión guarda **solo los tokens**; datos corruptos vuelven al valor por defecto | `api/cliente.spec.js` |
 
 ### 4.7 Integración con la API REST (EV3)
@@ -180,7 +180,7 @@ backend tiene sus propias 28 pruebas (JUnit, Mockito y MockMvc) en la carpeta `b
      ahora se muestra un mensaje claro al usuario.
   4. La cobertura variaba entre ejecuciones (95,5% / 96,1%) porque el confeti usaba temporizadores
      reales que a veces alcanzaban a ejecutarse durante otras pruebas. Se agregó
-     `confettiHalloween.spec.js` con reloj falso y ahora el resultado es **idéntico en cada ejecución**.
+     `confettiNavidad.spec.js` con reloj falso y ahora el resultado es **idéntico en cada ejecución**.
   5. (EV3) Al entrar directo a `/checkout`, la página redirigía al carrito antes de que llegara el
      catálogo desde la API, y el formulario no se autocompletaba porque la sesión aún se estaba
      verificando. Ahora espera ambas cosas antes de mostrarse.
